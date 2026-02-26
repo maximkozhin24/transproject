@@ -22,7 +22,6 @@ public class VehicleService {
                 .stream()
                 .map(VehicleMapper::toDto)
                 .toList();
-        //collect(Collectors.toList());
     }
 
     public VehicleDto getVehicleById(Long id) {
