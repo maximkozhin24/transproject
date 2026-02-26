@@ -43,3 +43,5 @@
 - DTO + Mapper
 - Слои Controller → Service → Repository
 - Checkstyle
+## SonarCloud
+https://sonarcloud.io/project/issues?issueStatuses=OPEN%2CCONFIRMED&id=maximkozhin24_transproject&open=AZyZoDWzChjh1G8EauOA
