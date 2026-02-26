@@ -21,7 +21,8 @@ public class VehicleService {
         return repository.findAll()
                 .stream()
                 .map(VehicleMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
+        //collect(Collectors.toList());
     }
 
     public VehicleDto getVehicleById(Long id) {
