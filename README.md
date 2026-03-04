@@ -1,3 +1,11 @@
+## Logistics REST API
+REST-сервис для предметной области
+«Логистическая система автотранспортной компании»,
+реализованный на базе Spring Boot с использованием многослойной архитектуры.
+## О проекте
+Проект демонстрирует реализацию REST API для ключевой сущности:
+> Vehicle (Транспортное средство)
+Сервис поддерживает базовые CRUD-операции и фильтрацию данных.
 ## 1. Client
 - id
 - name
@@ -43,3 +51,5 @@
 - DTO + Mapper
 - Слои Controller → Service → Repository
 - Checkstyle
+## SonarCloud
+https://sonarcloud.io/project/issues?issueStatuses=OPEN%2CCONFIRMED&id=maximkozhin24_transproject&open=AZyZoDWzChjh1G8EauOA
