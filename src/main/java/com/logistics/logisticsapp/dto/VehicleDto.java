@@ -5,12 +5,12 @@ public class VehicleDto {
     private Long id;
     private String plateNumber;
     private String model;
+    private double capacity;
 
-    public VehicleDto(Long id, String plateNumber, String model) {
-        this.id = id;
-        this.plateNumber = plateNumber;
-        this.model = model;
+    public VehicleDto() {
     }
+
+    // -------- GETTERS --------
 
     public Long getId() {
         return id;
@@ -22,6 +22,28 @@ public class VehicleDto {
 
     public String getModel() {
         return model;
+    }
+
+    public double getCapacity() {
+        return capacity;
+    }
+
+    // -------- SETTERS --------
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setCapacity(double capacity) {
+        this.capacity = capacity;
     }
 }
 
