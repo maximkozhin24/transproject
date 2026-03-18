@@ -1,0 +1,47 @@
+package com.logistics.logisticsapp.controller;
+
+import com.logistics.logisticsapp.dto.CargoRequestDto;
+import com.logistics.logisticsapp.dto.CargoResponseDto;
+import com.logistics.logisticsapp.service.CargoService;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/cargo")
+public class CargoController {
+
+    private final CargoService service;
+
+    public CargoController(CargoService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CargoResponseDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CargoResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<CargoResponseDto> create(@RequestBody CargoRequestDto dto) {
+        return ResponseEntity.ok(service.create(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CargoResponseDto> update(@PathVariable Long id, @RequestBody CargoRequestDto dto) {
+        return ResponseEntity.ok(service.update(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
