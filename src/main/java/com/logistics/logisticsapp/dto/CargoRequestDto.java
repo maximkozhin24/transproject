@@ -1,22 +1,12 @@
 package com.logistics.logisticsapp.dto;
 
-public class CargoDto {
+public class CargoRequestDto {
 
-        private Long id;
         private String name;
         private double weight;
         private Long orderId;
 
-        public CargoDto() {
-        }
-
-        public Long getId() {
-                return id;
-        }
-
-        public void setId(Long id) {
-                this.id = id;
-        }
+        public CargoRequestDto() {}
 
         public String getName() {
                 return name;

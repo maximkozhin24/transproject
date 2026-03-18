@@ -1,21 +1,19 @@
 package com.logistics.logisticsapp.dto;
 
-public class OrderDto {
+public class OrderRequestDto {
 
-    private Long id;
-    private String status;
     private double price;
+    private String status;
     private Long clientId;
 
-    public OrderDto() {
+    public OrderRequestDto() {}
+
+    public double getPrice() {
+        return price;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public String getStatus() {
@@ -24,14 +22,6 @@ public class OrderDto {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public Long getClientId() {

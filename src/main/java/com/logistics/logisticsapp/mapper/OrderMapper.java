@@ -1,34 +1,31 @@
 package com.logistics.logisticsapp.mapper;
 
+import com.logistics.logisticsapp.dto.OrderRequestDto;
+import com.logistics.logisticsapp.dto.OrderResponseDto;
 import com.logistics.logisticsapp.entity.Order;
-import org.springframework.stereotype.Component;
-import com.logistics.logisticsapp.entity.Client;
-import com.logistics.logisticsapp.dto.OrderDto;
 
-@Component
 public class OrderMapper {
 
-    public OrderDto toDTO(Order order) {
-
-        OrderDto dto = new OrderDto();
-
-        dto.setId(order.getId());
-        dto.setStatus(order.getStatus());
-        dto.setPrice(order.getPrice());
-        dto.setClientId(order.getClient().getId());
-
-        return dto;
-    }
-
-    public Order toEntity(OrderDto dto, Client client) {
-
+    public static Order toEntity(OrderRequestDto dto) {
         Order order = new Order();
 
-        order.setId(dto.getId());
-        order.setStatus(dto.getStatus());
         order.setPrice(dto.getPrice());
-        order.setClient(client);
+        order.setStatus(dto.getStatus());
 
         return order;
+    }
+
+    public static OrderResponseDto toDto(Order order) {
+        OrderResponseDto dto = new OrderResponseDto();
+
+        dto.setId(order.getId());
+        dto.setPrice(order.getPrice());
+        dto.setStatus(order.getStatus());
+
+        if (order.getClient() != null) {
+            dto.setClientId(order.getClient().getId());
+        }
+
+        return dto;
     }
 }

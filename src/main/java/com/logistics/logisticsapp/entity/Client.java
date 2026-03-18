@@ -15,11 +15,10 @@ public class Client {
     private String email;
     private String phone;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client")
     private List<Order> orders;
 
-    public Client() {}
-
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -1,44 +1,54 @@
 package com.logistics.logisticsapp.service;
 
-import com.logistics.logisticsapp.dto.VehicleDto;
+import com.logistics.logisticsapp.dto.VehicleRequestDto;
+import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.entity.Vehicle;
 import com.logistics.logisticsapp.mapper.VehicleMapper;
 import com.logistics.logisticsapp.repository.VehicleRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VehicleService {
 
-    private final VehicleRepository vehicleRepository;
-    private final VehicleMapper vehicleMapper; // экземпляр mapper
+    private final VehicleRepository repository;
 
-    public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper) {
-        this.vehicleRepository = vehicleRepository;
-        this.vehicleMapper = vehicleMapper;
+    public VehicleService(VehicleRepository repository) {
+        this.repository = repository;
     }
 
-    // Получить все машины
-    public List<VehicleDto> getAllVehicles() {
-        return vehicleRepository.findAll()
-            .stream()
-            .map(vehicleMapper::toDto) // используем экземпляр, а не класс
-            .toList();
+    public List<VehicleResponseDto> getAll() {
+        return repository.findAll().stream()
+            .map(VehicleMapper::toDto)
+            .collect(Collectors.toList());
     }
 
-    // Найти машины по модели
-    public List<VehicleDto> getVehiclesByModel(String model) {
-        return vehicleRepository.findByModel(model)
-            .stream()
-            .map(vehicleMapper::toDto)
-            .toList();
+    public VehicleResponseDto getById(Long id) {
+        Vehicle vehicle = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        return VehicleMapper.toDto(vehicle);
     }
 
-    public VehicleDto getVehicleById(Long id) {
-        Vehicle vehicle = vehicleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
-        return vehicleMapper.toDto(vehicle);
+    public VehicleResponseDto create(VehicleRequestDto dto) {
+        Vehicle vehicle = VehicleMapper.toEntity(dto);
+        return VehicleMapper.toDto(repository.save(vehicle));
+    }
+
+    public VehicleResponseDto update(Long id, VehicleRequestDto dto) {
+        Vehicle vehicle = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        vehicle.setPlateNumber(dto.getPlateNumber());
+        vehicle.setModel(dto.getModel());
+        vehicle.setCapacity(dto.getCapacity());
+
+        return VehicleMapper.toDto(repository.save(vehicle));
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }
-

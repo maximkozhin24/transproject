@@ -1,49 +1,34 @@
 package com.logistics.logisticsapp.dto;
 
-public class VehicleDto {
+public class VehicleRequestDto {
 
-    private Long id;
     private String plateNumber;
     private String model;
     private double capacity;
 
-    public VehicleDto() {
-    }
-
-    // -------- GETTERS --------
-
-    public Long getId() {
-        return id;
-    }
+    public VehicleRequestDto() {}
 
     public String getPlateNumber() {
         return plateNumber;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public double getCapacity() {
-        return capacity;
-    }
-
-    // -------- SETTERS --------
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setPlateNumber(String plateNumber) {
         this.plateNumber = plateNumber;
     }
 
+    public String getModel() {
+        return model;
+    }
+
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public double getCapacity() {
+        return capacity;
     }
 
     public void setCapacity(double capacity) {
         this.capacity = capacity;
     }
 }
-

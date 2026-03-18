@@ -1,19 +1,23 @@
 package com.logistics.logisticsapp.mapper;
 
-import com.logistics.logisticsapp.dto.RouteDto;
+import com.logistics.logisticsapp.dto.RouteRequestDto;
+import com.logistics.logisticsapp.dto.RouteResponseDto;
 import com.logistics.logisticsapp.entity.Route;
 
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Component
 public class RouteMapper {
 
-    public RouteDto toDto(Route route) {
+    public static Route toEntity(RouteRequestDto dto) {
+        Route route = new Route();
 
-        RouteDto dto = new RouteDto();
+        route.setStartLocation(dto.getStartLocation());
+        route.setEndLocation(dto.getEndLocation());
+        route.setDistance(dto.getDistance());
+
+        return route;
+    }
+
+    public static RouteResponseDto toDto(Route route) {
+        RouteResponseDto dto = new RouteResponseDto();
 
         dto.setId(route.getId());
         dto.setStartLocation(route.getStartLocation());
@@ -22,24 +26,6 @@ public class RouteMapper {
 
         if (route.getOrder() != null) {
             dto.setOrderId(route.getOrder().getId());
-        }
-
-        if (route.getVehicles() != null) {
-            List<Long> vehicleIds = route.getVehicles()
-                .stream()
-                .map(vehicle -> vehicle.getId())
-                .collect(Collectors.toList());
-
-            dto.setVehicleIds(vehicleIds);
-        }
-
-        if (route.getCargos() != null) {
-            List<Long> cargoIds = route.getCargos()
-                .stream()
-                .map(cargo -> cargo.getId())
-                .collect(Collectors.toList());
-
-            dto.setCargoIds(cargoIds);
         }
 
         return dto;

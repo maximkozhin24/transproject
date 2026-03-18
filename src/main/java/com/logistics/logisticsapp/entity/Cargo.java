@@ -1,6 +1,7 @@
 package com.logistics.logisticsapp.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,11 +19,10 @@ public class Cargo {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToMany(mappedBy = "cargos")
-    private List<Route> routes;
+    @OneToMany(mappedBy = "cargo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RouteVehicleCargo> routeVehicleCargoList = new ArrayList<>();
 
-    public Cargo() {}
-
+    // Getters и Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -35,6 +35,6 @@ public class Cargo {
     public Order getOrder() { return order; }
     public void setOrder(Order order) { this.order = order; }
 
-    public List<Route> getRoutes() { return routes; }
-    public void setRoutes(List<Route> routes) { this.routes = routes; }
+    public List<RouteVehicleCargo> getRouteVehicleCargoList() { return routeVehicleCargoList; }
+    public void setRouteVehicleCargoList(List<RouteVehicleCargo> list) { this.routeVehicleCargoList = list; }
 }

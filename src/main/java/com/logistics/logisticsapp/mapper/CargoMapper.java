@@ -1,22 +1,31 @@
 package com.logistics.logisticsapp.mapper;
 
-import org.springframework.stereotype.Component;
+import com.logistics.logisticsapp.dto.CargoRequestDto;
+import com.logistics.logisticsapp.dto.CargoResponseDto;
 import com.logistics.logisticsapp.entity.Cargo;
-import com.logistics.logisticsapp.dto.CargoDto;
 
-@Component
 public class CargoMapper {
 
-    public CargoDto toDTO(Cargo cargo) {
+    public static Cargo toEntity(CargoRequestDto dto) {
+        Cargo cargo = new Cargo();
 
-        CargoDto dto = new CargoDto();
+        cargo.setName(dto.getName());
+        cargo.setWeight(dto.getWeight());
+
+        return cargo;
+    }
+
+    public static CargoResponseDto toDto(Cargo cargo) {
+        CargoResponseDto dto = new CargoResponseDto();
 
         dto.setId(cargo.getId());
         dto.setName(cargo.getName());
         dto.setWeight(cargo.getWeight());
-        dto.setOrderId(cargo.getOrder().getId());
+
+        if (cargo.getOrder() != null) {
+            dto.setOrderId(cargo.getOrder().getId());
+        }
 
         return dto;
     }
-
 }

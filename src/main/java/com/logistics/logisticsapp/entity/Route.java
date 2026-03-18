@@ -1,6 +1,7 @@
 package com.logistics.logisticsapp.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,82 +20,25 @@ public class Route {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToMany
-    @JoinTable(
-        name = "route_vehicle",
-        joinColumns = @JoinColumn(name = "route_id"),
-        inverseJoinColumns = @JoinColumn(name = "vehicle_id")
-    )
-    private List<Vehicle> vehicles;
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RouteVehicleCargo> routeVehicleCargoList = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-        name = "route_cargo",
-        joinColumns = @JoinColumn(name = "route_id"),
-        inverseJoinColumns = @JoinColumn(name = "cargo_id")
-    )
-    private List<Cargo> cargos;
+    // Getters и Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Route() {
-    }
+    public String getStartLocation() { return startLocation; }
+    public void setStartLocation(String startLocation) { this.startLocation = startLocation; }
 
-    // -------- GETTERS --------
+    public String getEndLocation() { return endLocation; }
+    public void setEndLocation(String endLocation) { this.endLocation = endLocation; }
 
-    public Long getId() {
-        return id;
-    }
+    public double getDistance() { return distance; }
+    public void setDistance(double distance) { this.distance = distance; }
 
-    public String getStartLocation() {
-        return startLocation;
-    }
+    public Order getOrder() { return order; }
+    public void setOrder(Order order) { this.order = order; }
 
-    public String getEndLocation() {
-        return endLocation;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public List<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
-    public List<Cargo> getCargos() {
-        return cargos;
-    }
-
-    // -------- SETTERS --------
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setStartLocation(String startLocation) {
-        this.startLocation = startLocation;
-    }
-
-    public void setEndLocation(String endLocation) {
-        this.endLocation = endLocation;
-    }
-
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public void setVehicles(List<Vehicle> vehicles) {
-        this.vehicles = vehicles;
-    }
-
-    public void setCargos(List<Cargo> cargos) {
-        this.cargos = cargos;
-    }
+    public List<RouteVehicleCargo> getRouteVehicleCargoList() { return routeVehicleCargoList; }
+    public void setRouteVehicleCargoList(List<RouteVehicleCargo> list) { this.routeVehicleCargoList = list; }
 }
