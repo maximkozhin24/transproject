@@ -14,7 +14,7 @@ public class Order {
     private String status;
     private double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
 

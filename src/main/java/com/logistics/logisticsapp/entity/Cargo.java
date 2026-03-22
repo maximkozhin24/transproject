@@ -15,7 +15,7 @@ public class Cargo {
     private String name;
     private double weight;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 

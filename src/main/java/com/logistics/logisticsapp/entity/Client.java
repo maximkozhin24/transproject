@@ -1,6 +1,8 @@
 package com.logistics.logisticsapp.entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,8 +17,8 @@ public class Client {
     private String email;
     private String phone;
 
-    @OneToMany(mappedBy = "client")
-    private List<Order> orders;
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
 
     // Getters and Setters
     public Long getId() { return id; }

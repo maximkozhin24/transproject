@@ -16,7 +16,8 @@ public class Vehicle {
     private String model;
     private double capacity;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RouteVehicleCargo> routeVehicleCargoList = new ArrayList<>();
 
     // Getters и Setters

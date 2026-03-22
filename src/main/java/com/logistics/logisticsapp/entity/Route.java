@@ -16,7 +16,7 @@ public class Route {
     private String endLocation;
     private double distance;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 

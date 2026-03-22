@@ -11,17 +11,17 @@ public class RouteVehicleCargo {
     private Long id;
 
     // 🔗 Связь с Route
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
 
     // 🔗 Связь с Vehicle
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
     // 🔗 Связь с Cargo
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo cargo;
 

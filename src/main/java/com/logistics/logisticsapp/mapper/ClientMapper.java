@@ -2,6 +2,7 @@ package com.logistics.logisticsapp.mapper;
 
 import com.logistics.logisticsapp.dto.ClientRequestDto;
 import com.logistics.logisticsapp.dto.ClientResponseDto;
+import com.logistics.logisticsapp.dto.OrderResponseDto;
 import com.logistics.logisticsapp.entity.Client;
 import com.logistics.logisticsapp.entity.Order;
 
@@ -29,11 +30,12 @@ public class ClientMapper {
         dto.setPhone(client.getPhone());
 
         if (client.getOrders() != null) {
-            List<Long> orderIds = client.getOrders()
+            List<OrderResponseDto> orders = client.getOrders()
                 .stream()
-                .map(Order::getId)
+                .map(OrderMapper::toDto)
                 .collect(Collectors.toList());
-            dto.setOrderIds(orderIds);
+
+            dto.setOrders(orders);
         }
 
         return dto;
