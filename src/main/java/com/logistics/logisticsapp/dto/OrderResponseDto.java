@@ -1,12 +1,14 @@
 package com.logistics.logisticsapp.dto;
 
+import com.logistics.logisticsapp.entity.OrderStatus;
+
 import java.util.List;
 
 public class OrderResponseDto {
 
     private Long id;
     private double price;
-    private String status;
+    private OrderStatus status;
     private Long clientId;
     private List<Long> routeIds;
     private List<Long> cargoIds;
@@ -29,11 +31,11 @@ public class OrderResponseDto {
         this.price = price;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

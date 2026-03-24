@@ -1,8 +1,6 @@
 package com.logistics.logisticsapp.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "routes")
@@ -16,29 +14,37 @@ public class Route {
     private String endLocation;
     private double distance;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    // ===== GETTERS & SETTERS =====
 
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RouteVehicleCargo> routeVehicleCargoList = new ArrayList<>();
+    public Long getId() {
+        return id;
+    }
 
-    // Getters и Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getStartLocation() {
+        return startLocation;
+    }
 
-    public String getStartLocation() { return startLocation; }
-    public void setStartLocation(String startLocation) { this.startLocation = startLocation; }
+    public String getEndLocation() {
+        return endLocation;
+    }
 
-    public String getEndLocation() { return endLocation; }
-    public void setEndLocation(String endLocation) { this.endLocation = endLocation; }
+    public double getDistance() {
+        return distance;
+    }
 
-    public double getDistance() { return distance; }
-    public void setDistance(double distance) { this.distance = distance; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Order getOrder() { return order; }
-    public void setOrder(Order order) { this.order = order; }
+    public void setStartLocation(String startLocation) {
+        this.startLocation = startLocation;
+    }
 
-    public List<RouteVehicleCargo> getRouteVehicleCargoList() { return routeVehicleCargoList; }
-    public void setRouteVehicleCargoList(List<RouteVehicleCargo> list) { this.routeVehicleCargoList = list; }
+    public void setEndLocation(String endLocation) {
+        this.endLocation = endLocation;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
 }

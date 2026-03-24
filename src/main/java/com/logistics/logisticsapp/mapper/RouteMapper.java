@@ -8,26 +8,18 @@ public class RouteMapper {
 
     public static Route toEntity(RouteRequestDto dto) {
         Route route = new Route();
-
         route.setStartLocation(dto.getStartLocation());
         route.setEndLocation(dto.getEndLocation());
         route.setDistance(dto.getDistance());
-
         return route;
     }
 
     public static RouteResponseDto toDto(Route route) {
         RouteResponseDto dto = new RouteResponseDto();
-
         dto.setId(route.getId());
         dto.setStartLocation(route.getStartLocation());
         dto.setEndLocation(route.getEndLocation());
         dto.setDistance(route.getDistance());
-
-        if (route.getOrder() != null) {
-            dto.setOrderId(route.getOrder().getId());
-        }
-
         return dto;
     }
 }

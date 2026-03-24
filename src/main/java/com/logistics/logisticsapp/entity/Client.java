@@ -15,6 +15,7 @@ public class Client {
 
     private String name;
     private String email;
+    @Column(name = "phone", length = 20, nullable = false)
     private String phone;
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -4,9 +4,8 @@ public class CargoRequestDto {
 
         private String name;
         private double weight;
-        private Long orderId;
 
-        public CargoRequestDto() {}
+        // getters & setters
 
         public String getName() {
                 return name;
@@ -22,13 +21,5 @@ public class CargoRequestDto {
 
         public void setWeight(double weight) {
                 this.weight = weight;
-        }
-
-        public Long getOrderId() {
-                return orderId;
-        }
-
-        public void setOrderId(Long orderId) {
-                this.orderId = orderId;
         }
 }

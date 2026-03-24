@@ -5,9 +5,8 @@ public class RouteRequestDto {
     private String startLocation;
     private String endLocation;
     private double distance;
-    private Long orderId;
 
-    public RouteRequestDto() {}
+    // getters & setters
 
     public String getStartLocation() {
         return startLocation;
@@ -31,13 +30,5 @@ public class RouteRequestDto {
 
     public void setDistance(double distance) {
         this.distance = distance;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
     }
 }

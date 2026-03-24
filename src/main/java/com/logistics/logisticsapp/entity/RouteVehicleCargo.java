@@ -10,17 +10,22 @@ public class RouteVehicleCargo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔗 Связь с Route
+    // 🔥 ДОБАВИЛИ ORDER
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    // 🔗 Route
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
 
-    // 🔗 Связь с Vehicle
+    // 🔗 Vehicle
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id", nullable = false)
+    @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
-    // 🔗 Связь с Cargo
+    // 🔗 Cargo
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cargo_id", nullable = false)
     private Cargo cargo;
@@ -31,28 +36,36 @@ public class RouteVehicleCargo {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Order getOrder() {
+        return order;
     }
 
     public Route getRoute() {
         return route;
     }
 
-    public void setRoute(Route route) {
-        this.route = route;
-    }
-
     public Vehicle getVehicle() {
         return vehicle;
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
     public Cargo getCargo() {
         return cargo;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
     }
 
     public void setCargo(Cargo cargo) {

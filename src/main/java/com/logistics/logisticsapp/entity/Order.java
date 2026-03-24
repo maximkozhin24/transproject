@@ -1,6 +1,7 @@
 package com.logistics.logisticsapp.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,35 +12,60 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String status;
     private double price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
+
+    // 🔥 связь с клиентом
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "order")
-    private List<Route> routes;
+    // 🔥 главная связь — через связующую таблицу
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RouteVehicleCargo> routeVehicleCargoList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<Cargo> cargos;
+    // ===== GETTERS & SETTERS =====
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public double getPrice() {
+        return price;
+    }
 
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
+    public OrderStatus getStatus() {
+        return status;
+    }
 
-    public Client getClient() { return client; }
-    public void setClient(Client client) { this.client = client; }
+    public Client getClient() {
+        return client;
+    }
 
-    public List<Route> getRoutes() { return routes; }
-    public void setRoutes(List<Route> routes) { this.routes = routes; }
+    public List<RouteVehicleCargo> getRouteVehicleCargoList() {
+        return routeVehicleCargoList;
+    }
 
-    public List<Cargo> getCargos() { return cargos; }
-    public void setCargos(List<Cargo> cargos) { this.cargos = cargos; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setRouteVehicleCargoList(List<RouteVehicleCargo> list) {
+        this.routeVehicleCargoList = list;
+    }
 }

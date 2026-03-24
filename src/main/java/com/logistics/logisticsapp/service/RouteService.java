@@ -5,7 +5,6 @@ import com.logistics.logisticsapp.dto.RouteResponseDto;
 import com.logistics.logisticsapp.entity.Route;
 import com.logistics.logisticsapp.mapper.RouteMapper;
 import com.logistics.logisticsapp.repository.RouteRepository;
-import com.logistics.logisticsapp.repository.OrderRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -16,13 +15,25 @@ import java.util.stream.Collectors;
 public class RouteService {
 
     private final RouteRepository routeRepository;
-    private final OrderRepository orderRepository;
 
-    public RouteService(RouteRepository routeRepository, OrderRepository orderRepository) {
+    public RouteService(RouteRepository routeRepository) {
         this.routeRepository = routeRepository;
-        this.orderRepository = orderRepository;
     }
 
+    // 🔥 CREATE
+    public RouteResponseDto create(RouteRequestDto dto) {
+
+        Route route = new Route();
+        route.setStartLocation(dto.getStartLocation());
+        route.setEndLocation(dto.getEndLocation());
+        route.setDistance(dto.getDistance());
+
+        route = routeRepository.save(route);
+
+        return RouteMapper.toDto(route);
+    }
+
+    // 🔥 GET ALL
     public List<RouteResponseDto> getAll() {
         return routeRepository.findAll()
             .stream()
@@ -30,6 +41,7 @@ public class RouteService {
             .collect(Collectors.toList());
     }
 
+    // 🔥 GET BY ID
     public RouteResponseDto getById(Long id) {
         Route route = routeRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Route not found"));
@@ -37,27 +49,22 @@ public class RouteService {
         return RouteMapper.toDto(route);
     }
 
-    public RouteResponseDto create(RouteRequestDto dto) {
-        Route route = RouteMapper.toEntity(dto);
-
-        route.setOrder(orderRepository.findById(dto.getOrderId())
-            .orElseThrow(() -> new RuntimeException("Order not found")));
-
-        return RouteMapper.toDto(routeRepository.save(route));
-    }
-
+    // 🔥 UPDATE
     public RouteResponseDto update(Long id, RouteRequestDto dto) {
+
         Route route = routeRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Route not found"));
 
         route.setStartLocation(dto.getStartLocation());
         route.setEndLocation(dto.getEndLocation());
         route.setDistance(dto.getDistance());
-        route.setOrder(orderRepository.findById(dto.getOrderId()).orElseThrow());
 
-        return RouteMapper.toDto(routeRepository.save(route));
+        route = routeRepository.save(route);
+
+        return RouteMapper.toDto(route);
     }
 
+    // 🔥 DELETE
     public void delete(Long id) {
         routeRepository.deleteById(id);
     }
