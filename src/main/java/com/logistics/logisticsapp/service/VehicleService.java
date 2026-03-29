@@ -42,11 +42,11 @@ public class VehicleService {
             .map(VehicleMapper::toDto)
             .collect(Collectors.toList());
     }
-
+String err ="Vehicle not found";
     // 🔥 GET BY ID
     public VehicleResponseDto getById(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+            .orElseThrow(() -> new RuntimeException(err));
 
         return VehicleMapper.toDto(vehicle);
     }
@@ -54,7 +54,7 @@ public class VehicleService {
     // 🔥 UPDATE
     public VehicleResponseDto update(Long id, VehicleRequestDto dto) {
         Vehicle vehicle = vehicleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+            .orElseThrow(() -> new RuntimeException(err));
 
         vehicle.setPlateNumber(dto.getPlateNumber());
         vehicle.setModel(dto.getModel());
@@ -66,7 +66,7 @@ public class VehicleService {
     public void assignVehicle(AssignVehicleDto dto) {
 
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-            .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+            .orElseThrow(() -> new RuntimeException(err));
 
         List<RouteVehicleCargo> relations =
             rvcRepository.findByOrderId(dto.getOrderId());
