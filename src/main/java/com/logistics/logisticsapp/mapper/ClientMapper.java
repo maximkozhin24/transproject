@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientMapper {
+private ClientMapper(){
 
+}
     public static Client toEntity(ClientRequestDto dto) {
         Client client = new Client();
 

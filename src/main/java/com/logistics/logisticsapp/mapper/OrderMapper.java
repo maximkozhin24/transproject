@@ -7,7 +7,7 @@ import com.logistics.logisticsapp.entity.OrderStatus;
 import java.util.List;
 
 public class OrderMapper {
-
+private OrderMapper(){}
     // 🔥 DTO → Entity
     public static Order toEntity(OrderRequestDto dto) {
         Order order = new Order();

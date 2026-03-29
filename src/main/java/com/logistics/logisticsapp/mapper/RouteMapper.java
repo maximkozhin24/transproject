@@ -5,7 +5,7 @@ import com.logistics.logisticsapp.dto.RouteResponseDto;
 import com.logistics.logisticsapp.entity.Route;
 
 public class RouteMapper {
-
+private RouteMapper(){}
     public static Route toEntity(RouteRequestDto dto) {
         Route route = new Route();
         route.setStartLocation(dto.getStartLocation());
