@@ -10,8 +10,6 @@ public class VehicleResponseDto {
     private double capacity;
     private List<Long> routeVehicleCargoIds;
 
-    //public VehicleResponseDto() {}
-
     public Long getId() {
         return id;
     }

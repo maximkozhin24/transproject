@@ -42,7 +42,7 @@ public class VehicleService {
             .map(VehicleMapper::toDto)
             .collect(Collectors.toList());
     }
-String err ="Vehicle not found";
+final String err ="Vehicle not found";
     // 🔥 GET BY ID
     public VehicleResponseDto getById(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)

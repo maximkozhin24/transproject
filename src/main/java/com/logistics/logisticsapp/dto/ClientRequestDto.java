@@ -6,8 +6,6 @@ public class ClientRequestDto {
     private String email;
     private String phone;
 
-    //public ClientRequestDto() {}
-
     public String getName() {
         return name;
     }
