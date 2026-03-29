@@ -9,57 +9,61 @@ public class OrderResponseDto {
     private Long id;
     private double price;
     private OrderStatus status;
-    private Long clientId;
-    private List<Long> routeIds;
-    private List<Long> cargoIds;
 
-    public OrderResponseDto() {}
+    // 🔥 ДОБАВЛЯЕМ
+    private List<RouteResponseDto> routes;
+    private List<CargoResponseDto> cargos;
+    private List<VehicleResponseDto> vehicles;
+
+    // ===== GETTERS =====
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public OrderStatus getStatus() {
         return status;
+    }
+
+    public List<RouteResponseDto> getRoutes() {
+        return routes;
+    }
+
+    public List<CargoResponseDto> getCargos() {
+        return cargos;
+    }
+
+    public List<VehicleResponseDto> getVehicles() {
+        return vehicles;
+    }
+
+    // ===== SETTERS =====
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
-    public Long getClientId() {
-        return clientId;
+    public void setRoutes(List<RouteResponseDto> routes) {
+        this.routes = routes;
     }
 
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
+    public void setCargos(List<CargoResponseDto> cargos) {
+        this.cargos = cargos;
     }
 
-    public List<Long> getRouteIds() {
-        return routeIds;
-    }
-
-    public void setRouteIds(List<Long> routeIds) {
-        this.routeIds = routeIds;
-    }
-
-    public List<Long> getCargoIds() {
-        return cargoIds;
-    }
-
-    public void setCargoIds(List<Long> cargoIds) {
-        this.cargoIds = cargoIds;
+    public void setVehicles(List<VehicleResponseDto> vehicles) {
+        this.vehicles = vehicles;
     }
 }

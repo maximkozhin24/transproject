@@ -32,7 +32,7 @@ public class ClientMapper {
         if (client.getOrders() != null) {
             List<OrderResponseDto> orders = client.getOrders()
                 .stream()
-                .map(OrderMapper::toDto)
+                .map(OrderMapper::toDtoWithRelations)
                 .collect(Collectors.toList());
 
             dto.setOrders(orders);

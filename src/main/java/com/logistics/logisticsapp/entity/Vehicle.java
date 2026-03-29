@@ -12,6 +12,7 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "plate_number", unique = true, nullable = false)
     private String plateNumber;
     private String model;
     private double capacity;

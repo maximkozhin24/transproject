@@ -29,6 +29,11 @@ public class OrderController {
         return ResponseEntity.ok(service.getById(id));
     }
 
+    @GetMapping("/optimized")
+    public List<OrderResponseDto> getAllOptimized() {
+        return service.getAllOptimized();
+    }
+
     @PostMapping
     public ResponseEntity<OrderResponseDto> create(@RequestBody OrderRequestDto dto) {
         return ResponseEntity.ok(service.create(dto));

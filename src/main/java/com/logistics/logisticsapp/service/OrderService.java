@@ -31,7 +31,15 @@ public class OrderService {
         this.cargoRepository = cargoRepository;
         this.rvcRepository = rvcRepository;
     }
+    public List<OrderResponseDto> getAllOptimized() {
 
+        List<com.logistics.logisticsapp.entity.Order> orders =
+            orderRepository.findAllWithRelations();
+
+        return orders.stream()
+            .map(OrderMapper::toDtoWithRelations)
+            .toList();
+    }
     // 🔥 CREATE ORDER
     public OrderResponseDto create(OrderRequestDto dto) {
 
@@ -69,15 +77,15 @@ public class OrderService {
             rvcRepository.save(rvc);
         }
 
-        return OrderMapper.toDto(order);
+        return OrderMapper.toDtoWithRelations(order);
     }
 
     // 🔥 GET ALL
     public List<OrderResponseDto> getAll() {
         return orderRepository.findAll()
             .stream()
-            .map(OrderMapper::toDto)
-            .collect(Collectors.toList());
+            .map(OrderMapper::toDtoWithRelations)
+            .toList();
     }
 
     // 🔥 GET BY ID
@@ -85,7 +93,7 @@ public class OrderService {
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        return OrderMapper.toDto(order);
+        return OrderMapper.toDtoWithRelations(order);
     }
 
     public OrderResponseDto update(Long id, OrderRequestDto dto) {
@@ -106,7 +114,7 @@ public class OrderService {
 
         order = orderRepository.save(order);
 
-        return OrderMapper.toDto(order);
+        return OrderMapper.toDtoWithRelations(order);
     }
 
     // 🔥 DELETE

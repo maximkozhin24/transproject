@@ -6,6 +6,7 @@ import com.logistics.logisticsapp.entity.Cargo;
 import com.logistics.logisticsapp.mapper.CargoMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,5 +66,42 @@ public class CargoService {
     // 🔥 DELETE
     public void delete(Long id) {
         cargoRepository.deleteById(id);
+    }
+
+    // ❌ БЕЗ ТРАНЗАКЦИИ
+    public void createTwoCargosNoTransaction(CargoRequestDto dto1, CargoRequestDto dto2) {
+
+        // сохраняем первый
+        Cargo cargo1 = CargoMapper.toEntity(dto1);
+        cargoRepository.save(cargo1);
+
+        // сохраняем второй
+        Cargo cargo2 = CargoMapper.toEntity(dto2);
+
+        // 🔥 ИСКУССТВЕННАЯ ОШИБКА
+        if (true) {
+            throw new RuntimeException("Ошибка при сохранении второго cargo");
+        }
+
+        cargoRepository.save(cargo2);
+    }
+
+    // ✅ С ТРАНЗАКЦИЕЙ
+    @Transactional
+    public void createTwoCargosTransactional(CargoRequestDto dto1, CargoRequestDto dto2) {
+
+        // сохраняем первый
+        Cargo cargo1 = CargoMapper.toEntity(dto1);
+        cargoRepository.save(cargo1);
+
+        // сохраняем второй
+        Cargo cargo2 = CargoMapper.toEntity(dto2);
+
+        // 🔥 ИСКУССТВЕННАЯ ОШИБКА
+        if (true) {
+            throw new RuntimeException("Ошибка при сохранении второго cargo");
+        }
+
+        cargoRepository.save(cargo2);
     }
 }

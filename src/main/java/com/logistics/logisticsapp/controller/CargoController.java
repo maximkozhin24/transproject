@@ -2,8 +2,10 @@ package com.logistics.logisticsapp.controller;
 
 import com.logistics.logisticsapp.dto.CargoRequestDto;
 import com.logistics.logisticsapp.dto.CargoResponseDto;
+import com.logistics.logisticsapp.dto.TwoCargoRequest;
 import com.logistics.logisticsapp.service.CargoService;
 
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,4 +46,32 @@ public class CargoController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+
+
+
+        // ❌ БЕЗ ТРАНЗАКЦИИ
+        @PostMapping("/no-transaction")
+        public String createNoTransaction(@RequestBody TwoCargoRequest request) {
+
+            service.createTwoCargosNoTransaction(
+                request.getFirst(),
+                request.getSecond()
+            );
+
+            return "Done";
+        }
+
+        // ✅ С ТРАНЗАКЦИЕЙ
+        @PostMapping("/transaction")
+        public String createWithTransaction(@RequestBody TwoCargoRequest request) {
+
+             service.createTwoCargosTransactional(
+                request.getFirst(),
+                request.getSecond()
+            );
+
+            return "Done";
+        }
+
 }
