@@ -38,10 +38,10 @@ public class ClientService {
             .map(ClientMapper::toDto)
             .toList();
     }
-
+    static final String ERROR_CLIENT = "Client not found";
     public ClientResponseDto getById(Long id) {
         Client client = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Client not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_CLIENT));
 
         return ClientMapper.toDto(client);
     }
@@ -53,7 +53,7 @@ public class ClientService {
 
     public ClientResponseDto update(Long id, ClientRequestDto dto) {
         Client client = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Client not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_CLIENT));
 
         client.setName(dto.getName());
         client.setEmail(dto.getEmail());
@@ -64,7 +64,7 @@ public class ClientService {
 
     public void delete(Long clientId) {
         Client client = repository.findById(clientId)
-            .orElseThrow(() -> new RuntimeException("Client not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_CLIENT));
 
         // 1️⃣ Получаем все заказы клиента
         List<Order> orders = orderRepository.findAllByClient_Id(clientId);

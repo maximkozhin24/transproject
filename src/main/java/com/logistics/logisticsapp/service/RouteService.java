@@ -49,10 +49,10 @@ public class RouteService {
             .map(RouteMapper::toDto)
             .toList();
     }
-
+    static final String ERROR_ROUTE = "Route not found";
     public RouteResponseDto getById(Long id) {
         Route route = routeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Route not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_ROUTE));
 
         return RouteMapper.toDto(route);
     }
@@ -60,7 +60,7 @@ public class RouteService {
     public RouteResponseDto update(Long id, RouteRequestDto dto) {
 
         Route route = routeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Route not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_ROUTE));
 
         route.setStartLocation(dto.getStartLocation());
         route.setEndLocation(dto.getEndLocation());
@@ -73,7 +73,7 @@ public class RouteService {
 
     public void delete(Long routeId) {
         Route route = routeRepository.findById(routeId)
-            .orElseThrow(() -> new RuntimeException("Route not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_ROUTE));
 
         // Находим все RouteVehicleCargo с этим route
         List<RouteVehicleCargo> relations = rvcRepository.findAllByRoute_Id(routeId);

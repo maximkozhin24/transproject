@@ -91,10 +91,10 @@ public class OrderService {
             .map(OrderMapper::toDtoWithRelations)
             .toList();
     }
-
+    static final String ERROR_ORDER = "Order not found";
     public OrderResponseDto getById(Long id) {
         Order order = orderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
 
         return OrderMapper.toDtoWithRelations(order);
     }
@@ -102,14 +102,14 @@ public class OrderService {
     public OrderResponseDto update(Long id, OrderRequestDto dto) {
 
         Order order = orderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
 
         order.setPrice(dto.getPrice());
         order.setStatus(dto.getStatus());
 
         if (dto.getClientId() != null) {
             Client client = clientRepository.findById(dto.getClientId())
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
             order.setClient(client);
         }
 
@@ -121,7 +121,7 @@ public class OrderService {
     public void delete(Long orderId) {
         // 1️⃣ Получаем Order
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
 
         // 2️⃣ Получаем все связи с RouteVehicleCargo для этого Order
         List<RouteVehicleCargo> relations = rvcRepository.findAllByOrder_Id(orderId);
