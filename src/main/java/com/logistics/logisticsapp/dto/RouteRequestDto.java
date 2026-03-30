@@ -6,8 +6,6 @@ public class RouteRequestDto {
     private String endLocation;
     private double distance;
 
-    // getters & setters
-
     public String getStartLocation() {
         return startLocation;
     }

@@ -5,8 +5,6 @@ public class AssignVehicleDto {
     private Long vehicleId;
     private Long orderId;
 
-    // ===== getters & setters =====
-
     public Long getVehicleId() {
         return vehicleId;
     }

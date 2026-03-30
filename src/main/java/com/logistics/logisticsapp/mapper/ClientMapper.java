@@ -8,9 +8,8 @@ import java.util.List;
 
 
 public class ClientMapper {
-private ClientMapper(){
-
-}
+    private ClientMapper() {
+    }
     public static Client toEntity(ClientRequestDto dto) {
         Client client = new Client();
 

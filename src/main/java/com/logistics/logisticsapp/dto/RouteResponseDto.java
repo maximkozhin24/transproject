@@ -7,7 +7,6 @@ public class RouteResponseDto {
     private String endLocation;
     private double distance;
 
-    // getters & setters
 
     public Long getId() {
         return id;

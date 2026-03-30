@@ -5,10 +5,6 @@ public class RouteVehicleCargoRequestDto {
     private Long routeId;
     private Long cargoId;
 
-    // vehicle добавится позже через VehicleService
-
-    // getters & setters
-
     public Long getRouteId() {
         return routeId;
     }

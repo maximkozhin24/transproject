@@ -14,6 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         LEFT JOIN FETCH rvc.route
         LEFT JOIN FETCH rvc.cargo
         LEFT JOIN FETCH rvc.vehicle
-    """)
+        """)
     List<Order> findAllWithRelations();
 }

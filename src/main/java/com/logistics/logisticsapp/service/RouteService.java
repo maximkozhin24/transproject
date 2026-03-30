@@ -19,7 +19,6 @@ public class RouteService {
         this.routeRepository = routeRepository;
     }
 
-    // 🔥 CREATE
     public RouteResponseDto create(RouteRequestDto dto) {
 
         Route route = new Route();
@@ -32,7 +31,6 @@ public class RouteService {
         return RouteMapper.toDto(route);
     }
 
-    // 🔥 GET ALL
     public List<RouteResponseDto> getAll() {
         return routeRepository.findAll()
             .stream()
@@ -40,7 +38,6 @@ public class RouteService {
             .toList();
     }
 
-    // 🔥 GET BY ID
     public RouteResponseDto getById(Long id) {
         Route route = routeRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Route not found"));
@@ -48,7 +45,6 @@ public class RouteService {
         return RouteMapper.toDto(route);
     }
 
-    // 🔥 UPDATE
     public RouteResponseDto update(Long id, RouteRequestDto dto) {
 
         Route route = routeRepository.findById(id)
@@ -63,7 +59,6 @@ public class RouteService {
         return RouteMapper.toDto(route);
     }
 
-    // 🔥 DELETE
     public void delete(Long id) {
         routeRepository.deleteById(id);
     }

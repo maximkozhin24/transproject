@@ -6,8 +6,6 @@ public class VehicleRequestDto {
     private String model;
     private double capacity;
 
-    // getters/setters
-
     public String getPlateNumber() {
         return plateNumber;
     }

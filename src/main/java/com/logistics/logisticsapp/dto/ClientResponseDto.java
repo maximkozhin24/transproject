@@ -11,8 +11,6 @@ public class ClientResponseDto {
 
     private List<OrderResponseDto> orders;
 
-    // getters/setters
-
     public Long getId() {
         return id;
     }

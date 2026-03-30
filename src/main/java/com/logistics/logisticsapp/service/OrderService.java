@@ -1,9 +1,19 @@
 package com.logistics.logisticsapp.service;
 
-import com.logistics.logisticsapp.dto.*;
-import com.logistics.logisticsapp.entity.*;
+import com.logistics.logisticsapp.dto.OrderRequestDto;
+import com.logistics.logisticsapp.dto.OrderResponseDto;
+import com.logistics.logisticsapp.dto.RouteVehicleCargoRequestDto;
+import com.logistics.logisticsapp.entity.Cargo;
+import com.logistics.logisticsapp.entity.Client;
+import com.logistics.logisticsapp.entity.Order;
+import com.logistics.logisticsapp.entity.Route;
+import com.logistics.logisticsapp.entity.RouteVehicleCargo;
 import com.logistics.logisticsapp.mapper.OrderMapper;
-import com.logistics.logisticsapp.repository.*;
+import com.logistics.logisticsapp.repository.CargoRepository;
+import com.logistics.logisticsapp.repository.ClientRepository;
+import com.logistics.logisticsapp.repository.OrderRepository;
+import com.logistics.logisticsapp.repository.RouteRepository;
+import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -36,14 +46,14 @@ public class OrderService {
             .map(OrderMapper::toDtoWithRelations)
             .toList();
     }
-    // 🔥 CREATE ORDER
+
     public OrderResponseDto create(OrderRequestDto dto) {
 
         if (dto.getItems() == null || dto.getItems().isEmpty()) {
             throw new IllegalStateException("Items must not be empty");
         }
 
-        // 🔹 создаём Order
+
         Order order = new Order();
         order.setPrice(dto.getPrice());
         order.setStatus(dto.getStatus());
@@ -55,7 +65,6 @@ public class OrderService {
 
         order = orderRepository.save(order);
 
-        // 🔥 создаём связи через ID
         for (RouteVehicleCargoRequestDto item : dto.getItems()) {
 
             Route route = routeRepository.findById(item.getRouteId())
@@ -76,7 +85,6 @@ public class OrderService {
         return OrderMapper.toDtoWithRelations(order);
     }
 
-    // 🔥 GET ALL
     public List<OrderResponseDto> getAll() {
         return orderRepository.findAll()
             .stream()
@@ -84,7 +92,6 @@ public class OrderService {
             .toList();
     }
 
-    // 🔥 GET BY ID
     public OrderResponseDto getById(Long id) {
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -97,11 +104,9 @@ public class OrderService {
         Order order = orderRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        // 🔹 обновляем поля
         order.setPrice(dto.getPrice());
         order.setStatus(dto.getStatus());
 
-        // 🔹 обновляем client (если нужно)
         if (dto.getClientId() != null) {
             Client client = clientRepository.findById(dto.getClientId())
                 .orElseThrow(() -> new RuntimeException("Client not found"));
@@ -113,7 +118,6 @@ public class OrderService {
         return OrderMapper.toDtoWithRelations(order);
     }
 
-    // 🔥 DELETE
     public void delete(Long id) {
         orderRepository.deleteById(id);
     }

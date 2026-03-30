@@ -1,25 +1,22 @@
 package com.logistics.logisticsapp.dto;
 
 public class CargoRequestDto {
+    private String name;
+    private double weight;
 
-        private String name;
-        private double weight;
+    public String getName() {
+        return name;
+    }
 
-        // getters & setters
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        public String getName() {
-                return name;
-        }
+    public double getWeight() {
+        return weight;
+    }
 
-        public void setName(String name) {
-                this.name = name;
-        }
-
-        public double getWeight() {
-                return weight;
-        }
-
-        public void setWeight(double weight) {
-                this.weight = weight;
-        }
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
 }

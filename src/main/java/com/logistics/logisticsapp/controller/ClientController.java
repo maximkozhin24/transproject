@@ -5,7 +5,14 @@ import com.logistics.logisticsapp.dto.ClientResponseDto;
 import com.logistics.logisticsapp.service.ClientService;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -19,25 +26,21 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    // GET ALL
     @GetMapping
     public ResponseEntity<List<ClientResponseDto>> getAllClients() {
         return ResponseEntity.ok(clientService.getAll());
     }
 
-    // GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<ClientResponseDto> getClientById(@PathVariable Long id) {
         return ResponseEntity.ok(clientService.getById(id));
     }
 
-    // POST (CREATE)
     @PostMapping
     public ResponseEntity<ClientResponseDto> createClient(@RequestBody ClientRequestDto dto) {
         return ResponseEntity.ok(clientService.create(dto));
     }
 
-    //  PUT (UPDATE)
     @PutMapping("/{id}")
     public ResponseEntity<ClientResponseDto> updateClient(
         @PathVariable Long id,
@@ -45,7 +48,6 @@ public class ClientController {
         return ResponseEntity.ok(clientService.update(id, dto));
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         clientService.delete(id);

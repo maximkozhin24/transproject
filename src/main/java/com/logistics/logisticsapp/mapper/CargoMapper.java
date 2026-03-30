@@ -5,8 +5,8 @@ import com.logistics.logisticsapp.dto.CargoResponseDto;
 import com.logistics.logisticsapp.entity.Cargo;
 
 public class CargoMapper {
-private CargoMapper(){
-}
+    private CargoMapper() {
+    }
     public static Cargo toEntity(CargoRequestDto dto) {
         Cargo cargo = new Cargo();
         cargo.setName(dto.getName());

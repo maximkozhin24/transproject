@@ -5,7 +5,8 @@ import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.entity.Vehicle;
 
 public class VehicleMapper {
-private VehicleMapper(){}
+    private VehicleMapper() {
+    }
     public static Vehicle toEntity(VehicleRequestDto dto) {
         Vehicle vehicle = new Vehicle();
 

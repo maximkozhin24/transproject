@@ -1,6 +1,15 @@
 package com.logistics.logisticsapp.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,19 +30,38 @@ public class Vehicle {
         cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RouteVehicleCargo> routeVehicleCargoList = new ArrayList<>();
 
-    // Getters и Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getPlateNumber() { return plateNumber; }
-    public void setPlateNumber(String plateNumber) { this.plateNumber = plateNumber; }
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
 
-    public String getModel() { return model; }
-    public void setModel(String model) { this.model = model; }
+    public String getModel() {
+        return model;
+    }
+    public void setModel(String model) {
+        this.model = model;
+    }
 
-    public double getCapacity() { return capacity; }
-    public void setCapacity(double capacity) { this.capacity = capacity; }
+    public double getCapacity() {
+        return capacity;
+    }
+    public void setCapacity(double capacity) {
+        this.capacity = capacity;
+    }
 
-    public List<RouteVehicleCargo> getRouteVehicleCargoList() { return routeVehicleCargoList; }
-    public void setRouteVehicleCargoList(List<RouteVehicleCargo> list) { this.routeVehicleCargoList = list; }
+    public List<RouteVehicleCargo> getRouteVehicleCargoList() {
+        return routeVehicleCargoList;
+    }
+    public void setRouteVehicleCargoList(List<RouteVehicleCargo> list) {
+        this.routeVehicleCargoList = list;
+    }
 }

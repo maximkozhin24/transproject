@@ -25,7 +25,6 @@ public class VehicleService {
         this.rvcRepository = rvcRepository;
     }
 
-    // 🔥 CREATE
     public VehicleResponseDto create(VehicleRequestDto dto) {
 
         Vehicle vehicle = VehicleMapper.toEntity(dto);
@@ -34,15 +33,13 @@ public class VehicleService {
         return VehicleMapper.toDto(vehicle);
     }
 
-    // 🔥 GET ALL
     public List<VehicleResponseDto> getAll() {
         return vehicleRepository.findAll()
             .stream()
             .map(VehicleMapper::toDto)
             .toList();
     }
-private static final String VEHICLE_NOT_FOUND ="Vehicle not found";
-    // 🔥 GET BY ID
+    private static final String VEHICLE_NOT_FOUND = "Vehicle not found";
     public VehicleResponseDto getById(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
             .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
@@ -50,7 +47,6 @@ private static final String VEHICLE_NOT_FOUND ="Vehicle not found";
         return VehicleMapper.toDto(vehicle);
     }
 
-    // 🔥 UPDATE
     public VehicleResponseDto update(Long id, VehicleRequestDto dto) {
         Vehicle vehicle = vehicleRepository.findById(id)
             .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
@@ -80,7 +76,6 @@ private static final String VEHICLE_NOT_FOUND ="Vehicle not found";
         }
     }
 
-    // 🔥 DELETE
     public void delete(Long id) {
         vehicleRepository.deleteById(id);
     }

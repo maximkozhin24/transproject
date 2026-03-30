@@ -10,10 +10,7 @@ public class OrderRequestDto {
     private OrderStatus status;
     private Long clientId;
 
-    // 🔥 список связей
     private List<RouteVehicleCargoRequestDto> items;
-
-    // ===== getters & setters =====
 
     public double getPrice() {
         return price;

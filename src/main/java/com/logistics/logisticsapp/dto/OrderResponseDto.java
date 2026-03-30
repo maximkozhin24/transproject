@@ -10,12 +10,9 @@ public class OrderResponseDto {
     private double price;
     private OrderStatus status;
 
-    // 🔥 ДОБАВЛЯЕМ
     private List<RouteResponseDto> routes;
     private List<CargoResponseDto> cargos;
     private List<VehicleResponseDto> vehicles;
-
-    // ===== GETTERS =====
 
     public Long getId() {
         return id;
@@ -40,8 +37,6 @@ public class OrderResponseDto {
     public List<VehicleResponseDto> getVehicles() {
         return vehicles;
     }
-
-    // ===== SETTERS =====
 
     public void setId(Long id) {
         this.id = id;
