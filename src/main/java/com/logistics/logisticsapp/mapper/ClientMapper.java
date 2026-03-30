@@ -6,7 +6,6 @@ import com.logistics.logisticsapp.dto.OrderResponseDto;
 import com.logistics.logisticsapp.entity.Client;
 import java.util.List;
 
-
 public class ClientMapper {
     private ClientMapper() {
     }

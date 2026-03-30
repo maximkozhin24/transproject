@@ -29,4 +29,12 @@ public class VehicleResponseDto {
     public void setCapacity(double capacity) {
         this.capacity = capacity;
     }
+
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+    public String getModel() {
+        return model;
+    }
+    public double getCapacity(){return capacity;}
 }

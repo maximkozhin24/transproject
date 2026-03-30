@@ -8,6 +8,7 @@ import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.entity.Order;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderMapper {
     private OrderMapper() {

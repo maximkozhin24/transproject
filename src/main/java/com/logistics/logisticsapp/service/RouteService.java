@@ -2,10 +2,16 @@ package com.logistics.logisticsapp.service;
 
 import com.logistics.logisticsapp.dto.RouteRequestDto;
 import com.logistics.logisticsapp.dto.RouteResponseDto;
+import com.logistics.logisticsapp.entity.Cargo;
+import com.logistics.logisticsapp.entity.Order;
 import com.logistics.logisticsapp.entity.Route;
+import com.logistics.logisticsapp.entity.RouteVehicleCargo;
 import com.logistics.logisticsapp.mapper.RouteMapper;
+import com.logistics.logisticsapp.repository.CargoRepository;
+import com.logistics.logisticsapp.repository.OrderRepository;
 import com.logistics.logisticsapp.repository.RouteRepository;
 
+import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +20,15 @@ import java.util.List;
 public class RouteService {
 
     private final RouteRepository routeRepository;
-
-    public RouteService(RouteRepository routeRepository) {
+    private final OrderRepository orderRepository;
+    private final RouteVehicleCargoRepository rvcRepository;
+    private final CargoRepository cargoRepository;
+    public RouteService(RouteRepository routeRepository, OrderRepository orderRepository,
+                        RouteVehicleCargoRepository rvcRepository, CargoRepository cargoRepository) {
         this.routeRepository = routeRepository;
+        this.orderRepository = orderRepository;
+        this.rvcRepository = rvcRepository;
+        this.cargoRepository = cargoRepository;
     }
 
     public RouteResponseDto create(RouteRequestDto dto) {
@@ -59,7 +71,35 @@ public class RouteService {
         return RouteMapper.toDto(route);
     }
 
-    public void delete(Long id) {
-        routeRepository.deleteById(id);
+    public void delete(Long routeId) {
+        Route route = routeRepository.findById(routeId)
+            .orElseThrow(() -> new RuntimeException("Route not found"));
+
+        // Находим все RouteVehicleCargo с этим route
+        List<RouteVehicleCargo> relations = rvcRepository.findAllByRoute_Id(routeId);
+
+        // Для каждого Order, который использует этот Route
+        for (RouteVehicleCargo rvc : relations) {
+            Order order = rvc.getOrder();
+
+            // Удаляем все связи Order
+            List<RouteVehicleCargo> orderRelations = rvcRepository.findAllByOrder_Id(order.getId());
+            rvcRepository.deleteAll(orderRelations);
+
+            // Удаляем все Cargo, которые использовались только этим Order
+            for (RouteVehicleCargo or : orderRelations) {
+                Cargo cargo = or.getCargo();
+                boolean usedElsewhere = rvcRepository.existsByCargo_Id(cargo.getId());
+                if (!usedElsewhere) {
+                    cargoRepository.delete(cargo);
+                }
+            }
+
+            // Удаляем сам Order
+            orderRepository.delete(order);
+        }
+
+        // Удаляем Route
+        routeRepository.delete(route);
     }
 }

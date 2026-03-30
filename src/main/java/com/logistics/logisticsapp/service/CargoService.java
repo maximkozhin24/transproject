@@ -3,9 +3,13 @@ package com.logistics.logisticsapp.service;
 import com.logistics.logisticsapp.dto.CargoRequestDto;
 import com.logistics.logisticsapp.dto.CargoResponseDto;
 import com.logistics.logisticsapp.entity.Cargo;
+import com.logistics.logisticsapp.entity.Order;
+import com.logistics.logisticsapp.entity.RouteVehicleCargo;
 import com.logistics.logisticsapp.mapper.CargoMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 
+import com.logistics.logisticsapp.repository.OrderRepository;
+import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +19,13 @@ import java.util.List;
 public class CargoService {
 
     private final CargoRepository cargoRepository;
-
-    public CargoService(CargoRepository cargoRepository) {
+    private final OrderRepository orderRepository;
+    private final RouteVehicleCargoRepository rvcRepository;
+    public CargoService(CargoRepository cargoRepository, OrderRepository orderRepository,
+                        RouteVehicleCargoRepository rvcRepository) {
         this.cargoRepository = cargoRepository;
+        this.orderRepository = orderRepository;
+        this.rvcRepository = rvcRepository;
     }
 
     // 🔥 CREATE
@@ -63,8 +71,25 @@ public class CargoService {
     }
 
     // 🔥 DELETE
-    public void delete(Long id) {
-        cargoRepository.deleteById(id);
+    public void delete(Long cargoId) {
+        Cargo cargo = cargoRepository.findById(cargoId)
+            .orElseThrow(() -> new RuntimeException("Cargo not found"));
+
+        // Удаляем все связи
+        List<RouteVehicleCargo> relations = rvcRepository.findAllByCargo_Id(cargoId);
+        rvcRepository.deleteAll(relations);
+
+        // Проверяем, остались ли Order без Cargo и Route
+        for (RouteVehicleCargo rvc : relations) {
+            Order order = rvc.getOrder();
+            List<RouteVehicleCargo> remaining = rvcRepository.findAllByOrder_Id(order.getId());
+            if (remaining.isEmpty()) {
+                orderRepository.delete(order);
+            }
+        }
+
+        // Удаляем Cargo
+        cargoRepository.delete(cargo);
     }
 
     // ❌ БЕЗ ТРАНЗАКЦИИ

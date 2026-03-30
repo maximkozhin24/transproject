@@ -77,7 +77,7 @@ public class OrderService {
             rvc.setOrder(order);
             rvc.setRoute(route);
             rvc.setCargo(cargo);
-            rvc.setVehicle(null); // позже добавится
+            rvc.setVehicle(null);
 
             rvcRepository.save(rvc);
         }
@@ -118,7 +118,29 @@ public class OrderService {
         return OrderMapper.toDtoWithRelations(order);
     }
 
-    public void delete(Long id) {
-        orderRepository.deleteById(id);
+    public void delete(Long orderId) {
+        // 1️⃣ Получаем Order
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // 2️⃣ Получаем все связи с RouteVehicleCargo для этого Order
+        List<RouteVehicleCargo> relations = rvcRepository.findAllByOrder_Id(orderId);
+
+        // 3️⃣ Удаляем все связи в RouteVehicleCargo
+        rvcRepository.deleteAll(relations);
+
+        // 4️⃣ Удаляем все Cargo, которые были привязаны к этому Order
+        for (RouteVehicleCargo rvc : relations) {
+            Cargo cargo = rvc.getCargo();
+
+            // Проверяем, используется ли cargo где-то ещё
+            boolean usedElsewhere = rvcRepository.existsByCargo_Id(cargo.getId());
+            if (!usedElsewhere) {
+                cargoRepository.delete(cargo);
+            }
+        }
+
+        // 5️⃣ Не трогаем Route и Vehicle, просто удаляем Order
+        orderRepository.delete(order);
     }
 }
