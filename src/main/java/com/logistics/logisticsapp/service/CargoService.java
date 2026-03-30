@@ -80,7 +80,7 @@ public class CargoService {
 
         // 🔥 ИСКУССТВЕННАЯ ОШИБКА
         if (true) {
-            throw new RuntimeException("Ошибка при сохранении второго cargo");
+            throw new IllegalStateException("Error while saving second cargo");
         }
 
         cargoRepository.save(cargo2);
@@ -99,7 +99,7 @@ public class CargoService {
 
         // 🔥 ИСКУССТВЕННАЯ ОШИБКА
         if (true) {
-            throw new RuntimeException("Ошибка при сохранении второго cargo");
+            throw new IllegalStateException("Error while saving second cargo");
         }
 
         cargoRepository.save(cargo2);
