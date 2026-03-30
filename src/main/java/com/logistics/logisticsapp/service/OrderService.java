@@ -4,12 +4,8 @@ import com.logistics.logisticsapp.dto.*;
 import com.logistics.logisticsapp.entity.*;
 import com.logistics.logisticsapp.mapper.OrderMapper;
 import com.logistics.logisticsapp.repository.*;
-
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {

@@ -4,8 +4,6 @@ import com.logistics.logisticsapp.dto.CargoRequestDto;
 import com.logistics.logisticsapp.dto.CargoResponseDto;
 import com.logistics.logisticsapp.dto.TwoCargoRequest;
 import com.logistics.logisticsapp.service.CargoService;
-
-import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -4,10 +4,8 @@ import com.logistics.logisticsapp.dto.ClientRequestDto;
 import com.logistics.logisticsapp.dto.ClientResponseDto;
 import com.logistics.logisticsapp.dto.OrderResponseDto;
 import com.logistics.logisticsapp.entity.Client;
-import com.logistics.logisticsapp.entity.Order;
-
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class ClientMapper {
 private ClientMapper(){

@@ -2,7 +2,6 @@ package com.logistics.logisticsapp.mapper;
 
 import com.logistics.logisticsapp.dto.*;
 import com.logistics.logisticsapp.entity.Order;
-import com.logistics.logisticsapp.entity.OrderStatus;
 
 import java.util.List;
 
