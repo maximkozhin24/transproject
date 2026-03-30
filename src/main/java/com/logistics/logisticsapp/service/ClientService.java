@@ -24,7 +24,7 @@ public class ClientService {
         return repository.findAll()
             .stream()
             .map(ClientMapper::toDto)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public ClientResponseDto getById(Long id) {

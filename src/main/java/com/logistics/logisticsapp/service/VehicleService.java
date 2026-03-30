@@ -40,7 +40,7 @@ public class VehicleService {
         return vehicleRepository.findAll()
             .stream()
             .map(VehicleMapper::toDto)
-            .collect(Collectors.toList());
+            .toList();
     }
 final String err ="Vehicle not found";
     // 🔥 GET BY ID

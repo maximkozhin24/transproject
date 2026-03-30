@@ -38,7 +38,7 @@ public class CargoService {
         return cargoRepository.findAll()
             .stream()
             .map(CargoMapper::toDto)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     // 🔥 GET BY ID
