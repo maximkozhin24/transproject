@@ -47,11 +47,11 @@ public class CargoService {
             .map(CargoMapper::toDto)
             .toList();
     }
-
+    static final String ERROR_CARGO = "Cargo not found";
     // 🔥 GET BY ID
     public CargoResponseDto getById(Long id) {
         Cargo cargo = cargoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Cargo not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_CARGO));
 
         return CargoMapper.toDto(cargo);
     }
@@ -60,7 +60,7 @@ public class CargoService {
     public CargoResponseDto update(Long id, CargoRequestDto dto) {
 
         Cargo cargo = cargoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Cargo not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_CARGO));
 
         cargo.setName(dto.getName());
         cargo.setWeight(dto.getWeight());
@@ -73,7 +73,7 @@ public class CargoService {
     // 🔥 DELETE
     public void delete(Long cargoId) {
         Cargo cargo = cargoRepository.findById(cargoId)
-            .orElseThrow(() -> new RuntimeException("Cargo not found"));
+            .orElseThrow(() -> new RuntimeException(ERROR_CARGO));
 
         // Удаляем все связи
         List<RouteVehicleCargo> relations = rvcRepository.findAllByCargo_Id(cargoId);
