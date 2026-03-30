@@ -70,17 +70,17 @@ public class CargoService {
 
     // ❌ БЕЗ ТРАНЗАКЦИИ
     public void createTwoCargosNoTransaction(CargoRequestDto dto1, CargoRequestDto dto2) {
-        createTwoCargos(dto1, dto2, false);
+        createTwoCargos(dto1, dto2);
     }
 
     // ✅ С ТРАНЗАКЦИЕЙ
     @Transactional
     public void createTwoCargosTransactional(CargoRequestDto dto1, CargoRequestDto dto2) {
-        createTwoCargos(dto1, dto2, true);
+        createTwoCargos(dto1, dto2);
     }
 
     // 🔥 приватный метод с общей логикой
-    private void createTwoCargos(CargoRequestDto dto1, CargoRequestDto dto2, boolean transactional) {
+    private void createTwoCargos(CargoRequestDto dto1, CargoRequestDto dto2) {
 
         // сохраняем первый cargo
         Cargo cargo1 = CargoMapper.toEntity(dto1);
