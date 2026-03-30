@@ -16,10 +16,6 @@ public class CargoResponseDto {
         return name;
     }
 
-    public double getWeight() {
-        return weight;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
