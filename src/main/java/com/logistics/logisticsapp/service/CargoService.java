@@ -70,36 +70,28 @@ public class CargoService {
 
     // ❌ БЕЗ ТРАНЗАКЦИИ
     public void createTwoCargosNoTransaction(CargoRequestDto dto1, CargoRequestDto dto2) {
-
-        // сохраняем первый
-        Cargo cargo1 = CargoMapper.toEntity(dto1);
-        cargoRepository.save(cargo1);
-
-        // сохраняем второй
-        Cargo cargo2 = CargoMapper.toEntity(dto2);
-
-        // 🔥 ИСКУССТВЕННАЯ ОШИБКА
-        if (true) {
-            throw new IllegalStateException("Error while saving second cargo");
-        }
-
-        cargoRepository.save(cargo2);
+        createTwoCargos(dto1, dto2, false);
     }
 
     // ✅ С ТРАНЗАКЦИЕЙ
     @Transactional
     public void createTwoCargosTransactional(CargoRequestDto dto1, CargoRequestDto dto2) {
+        createTwoCargos(dto1, dto2, true);
+    }
 
-        // сохраняем первый
+    // 🔥 приватный метод с общей логикой
+    private void createTwoCargos(CargoRequestDto dto1, CargoRequestDto dto2, boolean transactional) {
+
+        // сохраняем первый cargo
         Cargo cargo1 = CargoMapper.toEntity(dto1);
         cargoRepository.save(cargo1);
 
-        // сохраняем второй
+        // сохраняем второй cargo
         Cargo cargo2 = CargoMapper.toEntity(dto2);
 
-        // 🔥 ИСКУССТВЕННАЯ ОШИБКА
+        // искусственная ошибка на втором cargo
         if (true) {
-            throw new IllegalStateException("Error while saving second cargo");
+            throw new IllegalStateException("Ошибка при сохранении второго cargo");
         }
 
         cargoRepository.save(cargo2);
