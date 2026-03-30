@@ -12,10 +12,6 @@ public class VehicleRequestDto {
         return plateNumber;
     }
 
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
-    }
-
     public String getModel() {
         return model;
     }
@@ -26,9 +22,5 @@ public class VehicleRequestDto {
 
     public double getCapacity() {
         return capacity;
-    }
-
-    public void setCapacity(double capacity) {
-        this.capacity = capacity;
     }
 }

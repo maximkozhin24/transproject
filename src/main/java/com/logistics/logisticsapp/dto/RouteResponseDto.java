@@ -13,18 +13,6 @@ public class RouteResponseDto {
         return id;
     }
 
-    public String getStartLocation() {
-        return startLocation;
-    }
-
-    public String getEndLocation() {
-        return endLocation;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
