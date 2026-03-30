@@ -36,5 +36,7 @@ public class VehicleResponseDto {
     public String getModel() {
         return model;
     }
-    public double getCapacity(){return capacity;}
+    public double getCapacity() {
+        return capacity;
+    }
 }

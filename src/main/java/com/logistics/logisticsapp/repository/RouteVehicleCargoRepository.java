@@ -7,8 +7,8 @@ import java.util.List;
 public interface RouteVehicleCargoRepository extends JpaRepository<RouteVehicleCargo, Long> {
 
     List<RouteVehicleCargo> findByOrderId(Long orderId);
-    List<RouteVehicleCargo> findAllByOrder_Id(Long orderId);
-    boolean existsByCargo_Id(Long cargoId);
-    List<RouteVehicleCargo> findAllByCargo_Id(Long cargoId);
-    List<RouteVehicleCargo> findAllByRoute_Id(Long routeId);
+    List<RouteVehicleCargo> findAllByOrderId(Long orderId);
+    boolean existsByCargoId(Long cargoId);
+    List<RouteVehicleCargo> findAllByCargoId(Long cargoId);
+    List<RouteVehicleCargo> findAllByRouteId(Long routeId);
 }

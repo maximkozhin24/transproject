@@ -75,31 +75,25 @@ public class RouteService {
         Route route = routeRepository.findById(routeId)
             .orElseThrow(() -> new RuntimeException(ERROR_ROUTE));
 
-        // Находим все RouteVehicleCargo с этим route
-        List<RouteVehicleCargo> relations = rvcRepository.findAllByRoute_Id(routeId);
+        List<RouteVehicleCargo> relations = rvcRepository.findAllByRouteId(routeId);
 
-        // Для каждого Order, который использует этот Route
         for (RouteVehicleCargo rvc : relations) {
             Order order = rvc.getOrder();
 
-            // Удаляем все связи Order
-            List<RouteVehicleCargo> orderRelations = rvcRepository.findAllByOrder_Id(order.getId());
+            List<RouteVehicleCargo> orderRelations = rvcRepository.findAllByOrderId(order.getId());
             rvcRepository.deleteAll(orderRelations);
 
-            // Удаляем все Cargo, которые использовались только этим Order
             for (RouteVehicleCargo or : orderRelations) {
                 Cargo cargo = or.getCargo();
-                boolean usedElsewhere = rvcRepository.existsByCargo_Id(cargo.getId());
+                boolean usedElsewhere = rvcRepository.existsByCargoId(cargo.getId());
                 if (!usedElsewhere) {
                     cargoRepository.delete(cargo);
                 }
             }
 
-            // Удаляем сам Order
             orderRepository.delete(order);
         }
 
-        // Удаляем Route
         routeRepository.delete(route);
     }
 }

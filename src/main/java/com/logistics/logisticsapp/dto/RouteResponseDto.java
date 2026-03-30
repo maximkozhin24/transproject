@@ -7,8 +7,6 @@ public class RouteResponseDto {
     private String endLocation;
     private double distance;
 
-    // ===== GETTERS =====
-
     public Long getId() {
         return id;
     }
@@ -24,8 +22,6 @@ public class RouteResponseDto {
     public double getDistance() {
         return distance;
     }
-
-    // ===== SETTERS =====
 
     public void setId(Long id) {
         this.id = id;

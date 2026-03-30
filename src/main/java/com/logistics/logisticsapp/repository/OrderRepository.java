@@ -16,5 +16,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         LEFT JOIN FETCH rvc.vehicle
         """)
     List<Order> findAllWithRelations();
-    List<Order> findAllByClient_Id(Long clientId);
+    List<Order> findAllByClientId(Long clientId);
 }

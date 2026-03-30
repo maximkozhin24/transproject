@@ -119,28 +119,23 @@ public class OrderService {
     }
 
     public void delete(Long orderId) {
-        // 1️⃣ Получаем Order
+
         Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
 
-        // 2️⃣ Получаем все связи с RouteVehicleCargo для этого Order
-        List<RouteVehicleCargo> relations = rvcRepository.findAllByOrder_Id(orderId);
+        List<RouteVehicleCargo> relations = rvcRepository.findAllByOrderId(orderId);
 
-        // 3️⃣ Удаляем все связи в RouteVehicleCargo
         rvcRepository.deleteAll(relations);
 
-        // 4️⃣ Удаляем все Cargo, которые были привязаны к этому Order
         for (RouteVehicleCargo rvc : relations) {
             Cargo cargo = rvc.getCargo();
 
-            // Проверяем, используется ли cargo где-то ещё
-            boolean usedElsewhere = rvcRepository.existsByCargo_Id(cargo.getId());
+            boolean usedElsewhere = rvcRepository.existsByCargoId(cargo.getId());
             if (!usedElsewhere) {
                 cargoRepository.delete(cargo);
             }
         }
 
-        // 5️⃣ Не трогаем Route и Vehicle, просто удаляем Order
         orderRepository.delete(order);
     }
 }

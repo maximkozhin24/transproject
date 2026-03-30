@@ -66,30 +66,25 @@ public class ClientService {
         Client client = repository.findById(clientId)
             .orElseThrow(() -> new RuntimeException(ERROR_CLIENT));
 
-        // 1️⃣ Получаем все заказы клиента
-        List<Order> orders = orderRepository.findAllByClient_Id(clientId);
+        List<Order> orders = orderRepository.findAllByClientId(clientId);
 
         for (Order order : orders) {
-            // 2️⃣ Получаем все связи RouteVehicleCargo для этого заказа
-            List<RouteVehicleCargo> relations = rvcRepository.findAllByOrder_Id(order.getId());
 
-            // 3️⃣ Удаляем все связи
+            List<RouteVehicleCargo> relations = rvcRepository.findAllByOrderId(order.getId());
+
             rvcRepository.deleteAll(relations);
 
-            // 4️⃣ Удаляем все Cargo, которые были привязаны к этому Order
             for (RouteVehicleCargo rvc : relations) {
                 Cargo cargo = rvc.getCargo();
-                boolean usedElsewhere = rvcRepository.existsByCargo_Id(cargo.getId());
+                boolean usedElsewhere = rvcRepository.existsByCargoId(cargo.getId());
                 if (!usedElsewhere) {
                     cargoRepository.delete(cargo);
                 }
             }
 
-            // 5️⃣ Удаляем сам Order
             orderRepository.delete(order);
         }
 
-        // 6️⃣ Удаляем Client
         repository.delete(client);
     }
 }
