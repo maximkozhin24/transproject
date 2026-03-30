@@ -72,7 +72,7 @@ final String err ="Vehicle not found";
             rvcRepository.findByOrderId(dto.getOrderId());
 
         if (relations.isEmpty()) {
-            throw new RuntimeException("No relations found for this order");
+            throw new IllegalStateException("No relations found for this order");
         }
 
         for (RouteVehicleCargo rvc : relations) {

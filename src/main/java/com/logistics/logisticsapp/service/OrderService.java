@@ -44,7 +44,7 @@ public class OrderService {
     public OrderResponseDto create(OrderRequestDto dto) {
 
         if (dto.getItems() == null || dto.getItems().isEmpty()) {
-            throw new RuntimeException("Items must not be empty");
+            throw new IllegalStateException("Items must not be empty");
         }
 
         // 🔹 создаём Order
