@@ -1,7 +1,6 @@
 package com.logistics.logisticsapp.dto;
 
 public class RouteResponseDto {
-
     private Long id;
     private String startLocation;
     private String endLocation;
@@ -11,28 +10,28 @@ public class RouteResponseDto {
         return id;
     }
 
-    public String getStartLocation() {
-        return startLocation;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEndLocation() {
         return endLocation;
     }
 
-    public double getDistance() {
-        return distance;
+    public void setEndLocation(String endLocation) {
+        this.endLocation = endLocation;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getStartLocation() {
+        return startLocation;
     }
 
     public void setStartLocation(String startLocation) {
         this.startLocation = startLocation;
     }
 
-    public void setEndLocation(String endLocation) {
-        this.endLocation = endLocation;
+    public double getDistance() {
+        return distance;
     }
 
     public void setDistance(double distance) {
