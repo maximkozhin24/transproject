@@ -79,7 +79,7 @@ public class VehicleService {
     public void delete(Long vehicleId) {
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
-            .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+            .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
 
         // ❗ просто отвязываем vehicle
         List<RouteVehicleCargo> relations = rvcRepository.findAllByVehicleId(vehicleId);
