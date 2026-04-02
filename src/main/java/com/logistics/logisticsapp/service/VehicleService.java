@@ -76,7 +76,18 @@ public class VehicleService {
         }
     }
 
-    public void delete(Long id) {
-        vehicleRepository.deleteById(id);
+    public void delete(Long vehicleId) {
+
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+            .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+
+        // ❗ просто отвязываем vehicle
+        List<RouteVehicleCargo> relations = rvcRepository.findAllByVehicleId(vehicleId);
+
+        for (RouteVehicleCargo rvc : relations) {
+            rvc.setVehicle(null); // сохраняем cargo и route
+        }
+
+        vehicleRepository.delete(vehicle);
     }
 }

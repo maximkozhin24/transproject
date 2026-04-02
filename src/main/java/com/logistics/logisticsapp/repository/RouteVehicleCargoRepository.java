@@ -11,4 +11,5 @@ public interface RouteVehicleCargoRepository extends JpaRepository<RouteVehicleC
     boolean existsByCargoId(Long cargoId);
     List<RouteVehicleCargo> findAllByCargoId(Long cargoId);
     List<RouteVehicleCargo> findAllByRouteId(Long routeId);
+    List<RouteVehicleCargo> findAllByVehicleId(Long routeId);
 }
