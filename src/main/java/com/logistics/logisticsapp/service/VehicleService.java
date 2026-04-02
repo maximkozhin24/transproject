@@ -81,11 +81,10 @@ public class VehicleService {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
             .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
 
-        // ❗ просто отвязываем vehicle
         List<RouteVehicleCargo> relations = rvcRepository.findAllByVehicleId(vehicleId);
 
         for (RouteVehicleCargo rvc : relations) {
-            rvc.setVehicle(null); // сохраняем cargo и route
+            rvc.setVehicle(null);
         }
 
         vehicleRepository.delete(vehicle);
