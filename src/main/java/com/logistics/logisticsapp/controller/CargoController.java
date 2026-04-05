@@ -2,7 +2,6 @@ package com.logistics.logisticsapp.controller;
 
 import com.logistics.logisticsapp.dto.CargoRequestDto;
 import com.logistics.logisticsapp.dto.CargoResponseDto;
-import com.logistics.logisticsapp.dto.OrderResponseDto;
 import com.logistics.logisticsapp.dto.TwoCargoRequest;
 import com.logistics.logisticsapp.service.CargoService;
 import org.springframework.http.ResponseEntity;

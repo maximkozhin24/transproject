@@ -25,9 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class OrderService {
-
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final Map<OrderSearchKey, List<OrderResponseDto>> cache = new HashMap<>();
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
@@ -167,7 +170,7 @@ public class OrderService {
 
         // Проверка кэша
         if (cache.containsKey(key)) {
-            System.out.println("👉 Данные взяты из кэша");
+            log.info("Данные взяты из кэша");
             return cache.get(key);
         }
 
@@ -186,6 +189,6 @@ public class OrderService {
 
     private void invalidateCache() {
         cache.clear();
-        System.out.println("👉 Кэш очищен после изменения данных");
+        log.info("Кэш очищен после изменения данных");
     }
 }
