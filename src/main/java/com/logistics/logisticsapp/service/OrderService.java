@@ -1,5 +1,6 @@
 package com.logistics.logisticsapp.service;
 
+import com.logistics.logisticsapp.cache.OrderSearchKey;
 import com.logistics.logisticsapp.dto.OrderRequestDto;
 import com.logistics.logisticsapp.dto.OrderResponseDto;
 import com.logistics.logisticsapp.dto.RouteVehicleCargoRequestDto;
@@ -16,11 +17,18 @@ import com.logistics.logisticsapp.repository.RouteRepository;
 import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
 
+    private final Map<OrderSearchKey, List<OrderResponseDto>> cache = new HashMap<>();
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final RouteRepository routeRepository;
@@ -87,11 +95,9 @@ public class OrderService {
         return OrderMapper.toDtoWithRelations(order);
     }
 
-    public List<OrderResponseDto> getAll() {
-        return orderRepository.findAll()
-            .stream()
-            .map(OrderMapper::toDtoWithRelations)
-            .toList();
+    public Page<OrderResponseDto> getAll(Pageable pageable) {
+        return orderRepository.findAll(pageable)
+            .map(OrderMapper::toDtoWithRelations);
     }
     static final String ERROR_ORDER = "Order not found";
     public OrderResponseDto getById(Long id) {
@@ -116,7 +122,7 @@ public class OrderService {
         }
 
         order = orderRepository.save(order);
-
+        invalidateCache();
         return OrderMapper.toDtoWithRelations(order);
     }
 
@@ -137,7 +143,49 @@ public class OrderService {
                 cargoRepository.delete(cargo);
             }
         }
-
         orderRepository.delete(order);
+        invalidateCache();
+    }
+
+    public List<OrderResponseDto> getOrdersByCargo(String cargoName) {
+        List<Order> orders = orderRepository.findOrdersByCargoName(cargoName);
+        return orders.stream()
+            .map(OrderMapper::toDtoWithRelations)
+            .toList();
+    }
+
+    public List<OrderResponseDto> getOrdersByCargoNative(String cargoName) {
+        return orderRepository.findOrdersByCargoNameNative(cargoName)
+            .stream()
+            .map(OrderMapper::toDtoWithRelations)
+            .toList();
+    }
+
+    public List<OrderResponseDto> getOrdersByCargoCached(String cargoName) {
+
+        OrderSearchKey key = new OrderSearchKey(cargoName);
+
+        // Проверка кэша
+        if (cache.containsKey(key)) {
+            System.out.println("👉 Данные взяты из кэша");
+            return cache.get(key);
+        }
+
+        // Запрос в БД
+        List<OrderResponseDto> result = orderRepository
+            .findOrdersByCargoName(cargoName)
+            .stream()
+            .map(OrderMapper::toDtoWithRelations)
+            .toList();
+
+        // Сохраняем в кэш
+        cache.put(key, result);
+
+        return result;
+    }
+
+    private void invalidateCache() {
+        cache.clear();
+        System.out.println("👉 Кэш очищен после изменения данных");
     }
 }

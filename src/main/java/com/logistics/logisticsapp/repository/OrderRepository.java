@@ -17,4 +17,20 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         """)
     List<Order> findAllWithRelations();
     List<Order> findAllByClientId(Long clientId);
+    @Query("""
+        SELECT DISTINCT o
+        FROM Order o
+        JOIN o.routeVehicleCargoList rvc
+        JOIN rvc.cargo c
+        WHERE c.name = :cargoName
+    """)
+    List<Order> findOrdersByCargoName(String cargoName);
+    @Query(value = """
+        SELECT DISTINCT o.*
+        FROM orders o
+        JOIN route_vehicle_cargo rvc ON o.id = rvc.order_id
+        JOIN cargo c ON rvc.cargo_id = c.id
+        WHERE c.name = :cargoName
+    """, nativeQuery = true)
+    List<Order> findOrdersByCargoNameNative(String cargoName);
 }
