@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class OrderService {
-    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrderService.class);
     private final Map<OrderSearchKey, List<OrderResponseDto>> cache = new HashMap<>();
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
@@ -94,7 +94,7 @@ public class OrderService {
 
             rvcRepository.save(rvc);
         }
-
+        invalidateCache();
         return OrderMapper.toDtoWithRelations(order);
     }
 
@@ -168,20 +168,20 @@ public class OrderService {
 
         OrderSearchKey key = new OrderSearchKey(cargoName);
 
-        // Проверка кэша
+
         if (cache.containsKey(key)) {
-            log.info("Данные взяты из кэша");
+            LOG.info("Данные взяты из кэша");
             return cache.get(key);
         }
 
-        // Запрос в БД
+
         List<OrderResponseDto> result = orderRepository
             .findOrdersByCargoName(cargoName)
             .stream()
             .map(OrderMapper::toDtoWithRelations)
             .toList();
 
-        // Сохраняем в кэш
+
         cache.put(key, result);
 
         return result;
@@ -189,6 +189,6 @@ public class OrderService {
 
     private void invalidateCache() {
         cache.clear();
-        log.info("Кэш очищен после изменения данных");
+        LOG.info("Кэш очищен после изменения данных");
     }
 }

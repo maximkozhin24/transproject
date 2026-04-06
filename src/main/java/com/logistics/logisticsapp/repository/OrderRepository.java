@@ -23,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         JOIN o.routeVehicleCargoList rvc
         JOIN rvc.cargo c
         WHERE c.name = :cargoName
-    """)
+          """)
     List<Order> findOrdersByCargoName(String cargoName);
     @Query(value = """
         SELECT DISTINCT o.*
@@ -31,6 +31,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         JOIN route_vehicle_cargo rvc ON o.id = rvc.order_id
         JOIN cargo c ON rvc.cargo_id = c.id
         WHERE c.name = :cargoName
-    """, nativeQuery = true)
+          """, nativeQuery = true)
     List<Order> findOrdersByCargoNameNative(String cargoName);
 }

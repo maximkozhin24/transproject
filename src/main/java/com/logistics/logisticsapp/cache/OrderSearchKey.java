@@ -16,8 +16,12 @@ public class OrderSearchKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof OrderSearchKey)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OrderSearchKey)) {
+            return false;
+        }
         OrderSearchKey that = (OrderSearchKey) o;
         return Objects.equals(cargoName, that.cargoName);
     }
