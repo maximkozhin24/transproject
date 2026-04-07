@@ -1,14 +1,8 @@
 package com.logistics.logisticsapp.service;
 
 import com.logistics.logisticsapp.cache.OrderSearchKey;
-import com.logistics.logisticsapp.dto.OrderRequestDto;
-import com.logistics.logisticsapp.dto.OrderResponseDto;
-import com.logistics.logisticsapp.dto.RouteVehicleCargoRequestDto;
-import com.logistics.logisticsapp.entity.Cargo;
-import com.logistics.logisticsapp.entity.Client;
-import com.logistics.logisticsapp.entity.Order;
-import com.logistics.logisticsapp.entity.Route;
-import com.logistics.logisticsapp.entity.RouteVehicleCargo;
+import com.logistics.logisticsapp.dto.*;
+import com.logistics.logisticsapp.entity.*;
 import com.logistics.logisticsapp.mapper.OrderMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 import com.logistics.logisticsapp.repository.ClientRepository;
@@ -21,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,10 +153,51 @@ public class OrderService {
     }
 
     public List<OrderResponseDto> getOrdersByCargoNative(String cargoName) {
-        return orderRepository.findOrdersByCargoNameNative(cargoName)
-            .stream()
-            .map(OrderMapper::toDtoWithRelations)
-            .toList();
+
+        List<Object[]> rows = orderRepository.findOrdersFlat(cargoName);
+
+        Map<Long, OrderResponseDto> orderMap = new HashMap<>();
+
+        for (Object[] row : rows) {
+
+            Long orderId = ((Number) row[0]).longValue();
+
+            OrderResponseDto order = orderMap.get(orderId);
+
+            if (order == null) {
+                order = new OrderResponseDto();
+                order.setId(orderId);
+                order.setStatus(OrderStatus.valueOf(String.valueOf(row[1])));
+                order.setRouteVehicleCargoList(new ArrayList<>());
+                orderMap.put(orderId, order);
+            }
+
+            // --- Cargo ---
+            CargoResponseDto cargo = new CargoResponseDto();
+            cargo.setId(row[2] != null ? ((Number) row[2]).longValue() : null);
+            cargo.setName((String) row[3]);
+
+            // --- Route ---
+            RouteResponseDto route = new RouteResponseDto();
+            route.setId(row[4] != null ? ((Number) row[4]).longValue() : null);
+            route.setStartLocation((String) row[5]);
+            route.setEndLocation((String) row[6]);
+
+            // --- Vehicle ---
+            VehicleResponseDto vehicle = new VehicleResponseDto();
+            vehicle.setId(row[7] != null ? ((Number) row[7]).longValue() : null);
+            vehicle.setPlateNumber((String) row[8]);
+
+            // --- RVC ---
+            RouteVehicleCargoResponseDto rvcDto = new RouteVehicleCargoResponseDto();
+            rvcDto.setCargo(cargo);
+            rvcDto.setRoute(route);
+            rvcDto.setVehicle(vehicle);
+
+            order.getRouteVehicleCargoList().add(rvcDto);
+        }
+
+        return new ArrayList<>(orderMap.values());
     }
 
     public List<OrderResponseDto> getOrdersByCargoCached(String cargoName) {
