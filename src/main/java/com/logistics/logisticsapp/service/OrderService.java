@@ -1,8 +1,19 @@
 package com.logistics.logisticsapp.service;
 
 import com.logistics.logisticsapp.cache.OrderSearchKey;
-import com.logistics.logisticsapp.dto.*;
-import com.logistics.logisticsapp.entity.*;
+import com.logistics.logisticsapp.dto.CargoResponseDto;
+import com.logistics.logisticsapp.dto.OrderRequestDto;
+import com.logistics.logisticsapp.dto.OrderResponseDto;
+import com.logistics.logisticsapp.dto.RouteResponseDto;
+import com.logistics.logisticsapp.dto.RouteVehicleCargoRequestDto;
+import com.logistics.logisticsapp.dto.RouteVehicleCargoResponseDto;
+import com.logistics.logisticsapp.dto.VehicleResponseDto;
+import com.logistics.logisticsapp.entity.Cargo;
+import com.logistics.logisticsapp.entity.Client;
+import com.logistics.logisticsapp.entity.Order;
+import com.logistics.logisticsapp.entity.OrderStatus;
+import com.logistics.logisticsapp.entity.Route;
+import com.logistics.logisticsapp.entity.RouteVehicleCargo;
 import com.logistics.logisticsapp.mapper.OrderMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 import com.logistics.logisticsapp.repository.ClientRepository;

@@ -26,7 +26,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     LEFT JOIN FETCH rvc.route
     LEFT JOIN FETCH rvc.vehicle
     WHERE c.name = :cargoName
-""")
+           """)
     List<Order> findOrdersByCargoName(String cargoName);
     @Query(value = """
     SELECT 
@@ -49,6 +49,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     LEFT JOIN routes r ON rvc.route_id = r.id
     LEFT JOIN vehicles v ON rvc.vehicle_id = v.id
     WHERE c.name = :cargoName
-""", nativeQuery = true)
+         """, nativeQuery = true)
     List<Object[]> findOrdersFlat(@Param("cargoName") String cargoName);
 }
