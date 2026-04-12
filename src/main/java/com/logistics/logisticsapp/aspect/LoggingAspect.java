@@ -25,21 +25,29 @@ public class LoggingAspect {
 
         long start = System.currentTimeMillis();
 
-        try {
-            Object result = joinPoint.proceed();
+        Object result;
+        Throwable error = null;
 
+        try {
+            result = joinPoint.proceed();
+            return result;
+        } catch (Throwable ex) {
+            error = ex;
+            throw ex;
+        } finally {
             long time = System.currentTimeMillis() - start;
 
-            if (LOG.isInfoEnabled()) {
+            if (error == null) {
                 LOG.info("Method {} executed in {} ms",
                     joinPoint.getSignature().toShortString(),
                     time);
+            } else {
+                LOG.error("Method {} failed after {} ms",
+                    joinPoint.getSignature().toShortString(),
+                    time,
+                    error);
             }
-
-            return result;
-
-        } finally {
-
         }
+
     }
 }
