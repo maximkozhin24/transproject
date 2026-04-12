@@ -50,7 +50,7 @@ public class LoggingAspect {
                 ex.getMessage(),
                 ex);
 
-            throw ex;
+            throw new RuntimeException("Error in method " + method, ex);
         }
     }
 }
