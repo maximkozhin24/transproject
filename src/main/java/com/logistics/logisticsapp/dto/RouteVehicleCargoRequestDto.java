@@ -1,8 +1,11 @@
 package com.logistics.logisticsapp.dto;
 
-public class RouteVehicleCargoRequestDto {
+import io.swagger.v3.oas.annotations.media.Schema;
 
+public class RouteVehicleCargoRequestDto {
+    @Schema(example = "1")
     private Long routeId;
+    @Schema(example = "1")
     private Long cargoId;
 
     public Long getRouteId() {

@@ -1,10 +1,16 @@
 package com.logistics.logisticsapp.dto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class VehicleRequestDto {
-
+    @NotBlank(message = "PlateNumber must not be null")
     private String plateNumber;
+    @NotBlank(message = "Model must not be null")
     private String model;
-    private double capacity;
+    @NotNull(message = "Capacity must not be null")
+    @Positive(message = "Capacity must be positive")
+    private Double capacity;
 
     public String getPlateNumber() {
         return plateNumber;

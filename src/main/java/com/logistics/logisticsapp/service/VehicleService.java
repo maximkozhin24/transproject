@@ -5,6 +5,8 @@ import com.logistics.logisticsapp.dto.VehicleRequestDto;
 import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.entity.RouteVehicleCargo;
 import com.logistics.logisticsapp.entity.Vehicle;
+import com.logistics.logisticsapp.exception.ConflictException;
+import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.mapper.VehicleMapper;
 import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
 import com.logistics.logisticsapp.repository.VehicleRepository;
@@ -26,6 +28,9 @@ public class VehicleService {
     }
 
     public VehicleResponseDto create(VehicleRequestDto dto) {
+        if (vehicleRepository.existsByPlateNumber(dto.getPlateNumber())) {
+            throw new ConflictException("PlateNumber already exists");
+        }
 
         Vehicle vehicle = VehicleMapper.toEntity(dto);
         vehicle = vehicleRepository.save(vehicle);
@@ -42,14 +47,14 @@ public class VehicleService {
     private static final String VEHICLE_NOT_FOUND = "Vehicle not found";
     public VehicleResponseDto getById(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(VEHICLE_NOT_FOUND));
 
         return VehicleMapper.toDto(vehicle);
     }
 
     public VehicleResponseDto update(Long id, VehicleRequestDto dto) {
         Vehicle vehicle = vehicleRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(VEHICLE_NOT_FOUND));
 
         vehicle.setPlateNumber(dto.getPlateNumber());
         vehicle.setModel(dto.getModel());
@@ -61,7 +66,7 @@ public class VehicleService {
     public void assignVehicle(AssignVehicleDto dto) {
 
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-            .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(VEHICLE_NOT_FOUND));
 
         List<RouteVehicleCargo> relations =
             rvcRepository.findByOrderId(dto.getOrderId());
@@ -79,7 +84,7 @@ public class VehicleService {
     public void delete(Long vehicleId) {
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
-            .orElseThrow(() -> new RuntimeException(VEHICLE_NOT_FOUND));
+            .orElseThrow(() -> new ResourceNotFoundException(VEHICLE_NOT_FOUND));
 
         List<RouteVehicleCargo> relations = rvcRepository.findAllByVehicleId(vehicleId);
 

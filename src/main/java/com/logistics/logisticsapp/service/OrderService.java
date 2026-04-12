@@ -14,6 +14,7 @@ import com.logistics.logisticsapp.entity.Order;
 import com.logistics.logisticsapp.entity.OrderStatus;
 import com.logistics.logisticsapp.entity.Route;
 import com.logistics.logisticsapp.entity.RouteVehicleCargo;
+import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.mapper.OrderMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 import com.logistics.logisticsapp.repository.ClientRepository;
@@ -78,7 +79,7 @@ public class OrderService {
         order.setStatus(dto.getStatus());
 
         Client client = clientRepository.findById(dto.getClientId())
-            .orElseThrow(() -> new RuntimeException("Client not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         order.setClient(client);
 
@@ -87,10 +88,10 @@ public class OrderService {
         for (RouteVehicleCargoRequestDto item : dto.getItems()) {
 
             Route route = routeRepository.findById(item.getRouteId())
-                .orElseThrow(() -> new RuntimeException("Route not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Route not found"));
 
             Cargo cargo = cargoRepository.findById(item.getCargoId())
-                .orElseThrow(() -> new RuntimeException("Cargo not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cargo not found"));
 
             RouteVehicleCargo rvc = new RouteVehicleCargo();
             rvc.setOrder(order);
@@ -111,7 +112,7 @@ public class OrderService {
     static final String ERROR_ORDER = "Order not found";
     public OrderResponseDto getById(Long id) {
         Order order = orderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ORDER));
 
         return OrderMapper.toDtoWithRelations(order);
     }
@@ -119,14 +120,14 @@ public class OrderService {
     public OrderResponseDto update(Long id, OrderRequestDto dto) {
 
         Order order = orderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ORDER));
 
         order.setPrice(dto.getPrice());
         order.setStatus(dto.getStatus());
 
         if (dto.getClientId() != null) {
             Client client = clientRepository.findById(dto.getClientId())
-                .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
+                .orElseThrow(() -> new ResourceNotFoundException(ERROR_ORDER));
             order.setClient(client);
         }
 
@@ -138,7 +139,7 @@ public class OrderService {
     public void delete(Long orderId) {
 
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new RuntimeException(ERROR_ORDER));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ORDER));
 
         List<RouteVehicleCargo> relations = rvcRepository.findAllByOrderId(orderId);
 

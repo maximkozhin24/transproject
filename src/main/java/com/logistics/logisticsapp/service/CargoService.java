@@ -5,6 +5,7 @@ import com.logistics.logisticsapp.dto.CargoResponseDto;
 import com.logistics.logisticsapp.entity.Cargo;
 import com.logistics.logisticsapp.entity.Order;
 import com.logistics.logisticsapp.entity.RouteVehicleCargo;
+import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.mapper.CargoMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 
@@ -49,7 +50,7 @@ public class CargoService {
 
     public CargoResponseDto getById(Long id) {
         Cargo cargo = cargoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_CARGO));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_CARGO));
 
         return CargoMapper.toDto(cargo);
     }
@@ -57,7 +58,7 @@ public class CargoService {
     public CargoResponseDto update(Long id, CargoRequestDto dto) {
 
         Cargo cargo = cargoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_CARGO));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_CARGO));
 
         cargo.setName(dto.getName());
         cargo.setWeight(dto.getWeight());
@@ -69,7 +70,7 @@ public class CargoService {
 
     public void delete(Long cargoId) {
         Cargo cargo = cargoRepository.findById(cargoId)
-            .orElseThrow(() -> new RuntimeException(ERROR_CARGO));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_CARGO));
 
         List<RouteVehicleCargo> relations = rvcRepository.findAllByCargoId(cargoId);
         rvcRepository.deleteAll(relations);

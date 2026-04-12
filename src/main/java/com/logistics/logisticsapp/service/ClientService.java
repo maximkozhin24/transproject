@@ -6,6 +6,8 @@ import com.logistics.logisticsapp.entity.Cargo;
 import com.logistics.logisticsapp.entity.Client;
 import com.logistics.logisticsapp.entity.Order;
 import com.logistics.logisticsapp.entity.RouteVehicleCargo;
+import com.logistics.logisticsapp.exception.ConflictException;
+import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.mapper.ClientMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 import com.logistics.logisticsapp.repository.ClientRepository;
@@ -41,19 +43,28 @@ public class ClientService {
     static final String ERROR_CLIENT = "Client not found";
     public ClientResponseDto getById(Long id) {
         Client client = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_CLIENT));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_CLIENT));
 
         return ClientMapper.toDto(client);
     }
 
     public ClientResponseDto create(ClientRequestDto dto) {
+        if (repository.existsByEmail(dto.getEmail())) {
+            throw new ConflictException("Email already exists");
+        }
+
+        if (repository.existsByPhone(dto.getPhone())) {
+            throw new ConflictException("Phone already exists");
+        }
+
         Client client = ClientMapper.toEntity(dto);
+
         return ClientMapper.toDto(repository.save(client));
     }
 
     public ClientResponseDto update(Long id, ClientRequestDto dto) {
         Client client = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_CLIENT));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_CLIENT));
 
         client.setName(dto.getName());
         client.setEmail(dto.getEmail());
@@ -64,7 +75,7 @@ public class ClientService {
 
     public void delete(Long clientId) {
         Client client = repository.findById(clientId)
-            .orElseThrow(() -> new RuntimeException(ERROR_CLIENT));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_CLIENT));
 
         List<Order> orders = orderRepository.findAllByClientId(clientId);
 

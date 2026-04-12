@@ -6,6 +6,7 @@ import com.logistics.logisticsapp.entity.Cargo;
 import com.logistics.logisticsapp.entity.Order;
 import com.logistics.logisticsapp.entity.Route;
 import com.logistics.logisticsapp.entity.RouteVehicleCargo;
+import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.mapper.RouteMapper;
 import com.logistics.logisticsapp.repository.CargoRepository;
 import com.logistics.logisticsapp.repository.OrderRepository;
@@ -52,7 +53,7 @@ public class RouteService {
     static final String ERROR_ROUTE = "Route not found";
     public RouteResponseDto getById(Long id) {
         Route route = routeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_ROUTE));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ROUTE));
 
         return RouteMapper.toDto(route);
     }
@@ -60,7 +61,7 @@ public class RouteService {
     public RouteResponseDto update(Long id, RouteRequestDto dto) {
 
         Route route = routeRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(ERROR_ROUTE));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ROUTE));
 
         route.setStartLocation(dto.getStartLocation());
         route.setEndLocation(dto.getEndLocation());
@@ -73,7 +74,7 @@ public class RouteService {
 
     public void delete(Long routeId) {
         Route route = routeRepository.findById(routeId)
-            .orElseThrow(() -> new RuntimeException(ERROR_ROUTE));
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ROUTE));
 
         List<RouteVehicleCargo> relations = rvcRepository.findAllByRouteId(routeId);
 

@@ -5,6 +5,8 @@ import com.logistics.logisticsapp.dto.VehicleRequestDto;
 import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.service.VehicleService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,33 +29,57 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
+    @Operation(
+        summary = "Создать машину",
+        description = "Создаёт новую машину"
+    )
     @PostMapping
-    public ResponseEntity<VehicleResponseDto> create(@RequestBody VehicleRequestDto dto) {
+    public ResponseEntity<VehicleResponseDto> create(@Valid @RequestBody VehicleRequestDto dto) {
         return ResponseEntity.ok(vehicleService.create(dto));
     }
 
+    @Operation(
+        summary = "Привязка машины к заказу",
+        description = "Привязывает машину к существующему заказу"
+    )
     @PostMapping("/assign")
-    public ResponseEntity<String> assignVehicle(@RequestBody AssignVehicleDto dto) {
+    public ResponseEntity<String> assignVehicle(@Valid @RequestBody AssignVehicleDto dto) {
         vehicleService.assignVehicle(dto);
         return ResponseEntity.ok("Vehicle assigned to order successfully");
     }
 
+    @Operation(
+        summary = "Получить все машины",
+        description = "Возвращает список всех машин"
+    )
     @GetMapping
     public ResponseEntity<List<VehicleResponseDto>> getAll() {
         return ResponseEntity.ok(vehicleService.getAll());
     }
 
+    @Operation(
+        summary = "Получить машину по ID",
+        description = "Возвращает машину по его идентификатору"
+    )
     @GetMapping("/{id}")
     public ResponseEntity<VehicleResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(vehicleService.getById(id));
     }
 
+    @Operation(
+        summary = "Обновить машину",
+        description = "Обновляет существующую машину по ID"
+    )
     @PutMapping("/{id}")
     public ResponseEntity<VehicleResponseDto> update(@PathVariable Long id,
                                                      @RequestBody VehicleRequestDto dto) {
         return ResponseEntity.ok(vehicleService.update(id, dto));
     }
 
+    @Operation(
+        summary = "Удалить машину",
+        description = "Удаляет машину по ID"
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         vehicleService.delete(id);
