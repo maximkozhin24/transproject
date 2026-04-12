@@ -30,9 +30,11 @@ public class LoggingAspect {
 
             long time = System.currentTimeMillis() - start;
 
-            LOG.info("Method {} executed in {} ms",
-                joinPoint.getSignature().toShortString(),
-                time);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Method {} executed in {} ms",
+                    joinPoint.getSignature().toShortString(),
+                    time);
+            }
 
             return result;
 
