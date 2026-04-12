@@ -1,5 +1,6 @@
 package com.logistics.logisticsapp.aspect;
 
+import com.logistics.logisticsapp.exception.ServiceExecutionException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -50,7 +51,10 @@ public class LoggingAspect {
                 ex.getMessage(),
                 ex);
 
-            throw new RuntimeException("Error in method " + method, ex);
+            throw new ServiceExecutionException(
+                "Failure in method " + method + " after " + time + " ms",
+                ex
+            );
         }
     }
 }
