@@ -1,6 +1,5 @@
 package com.logistics.logisticsapp.aspect;
 
-import com.logistics.logisticsapp.exception.ServiceExecutionException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -39,22 +38,8 @@ public class LoggingAspect {
 
             return result;
 
-        } catch (Exception ex) {
+        } finally {
 
-            long time = System.currentTimeMillis() - start;
-
-            String method = joinPoint.getSignature().toShortString();
-
-            LOG.error("Method {} failed after {} ms with error: {}",
-                joinPoint.getSignature().toShortString(),
-                time,
-                ex.getMessage(),
-                ex);
-
-            throw new ServiceExecutionException(
-                "Failure in method " + method + " after " + time + " ms",
-                ex
-            );
         }
     }
 }
