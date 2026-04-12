@@ -42,6 +42,8 @@ public class LoggingAspect {
 
             long time = System.currentTimeMillis() - start;
 
+            String method = joinPoint.getSignature().toShortString();
+
             LOG.error("Method {} failed after {} ms with error: {}",
                 joinPoint.getSignature().toShortString(),
                 time,
