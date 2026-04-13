@@ -184,23 +184,23 @@ public class OrderService {
                 orderMap.put(orderId, order);
             }
 
-            // --- Cargo ---
+
             CargoResponseDto cargo = new CargoResponseDto();
             cargo.setId(row[2] != null ? ((Number) row[2]).longValue() : null);
             cargo.setName((String) row[3]);
 
-            // --- Route ---
+
             RouteResponseDto route = new RouteResponseDto();
             route.setId(row[4] != null ? ((Number) row[4]).longValue() : null);
             route.setStartLocation((String) row[5]);
             route.setEndLocation((String) row[6]);
 
-            // --- Vehicle ---
+
             VehicleResponseDto vehicle = new VehicleResponseDto();
             vehicle.setId(row[7] != null ? ((Number) row[7]).longValue() : null);
             vehicle.setPlateNumber((String) row[8]);
 
-            // --- RVC ---
+
             RouteVehicleCargoResponseDto rvcDto = new RouteVehicleCargoResponseDto();
             rvcDto.setCargo(cargo);
             rvcDto.setRoute(route);
