@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 @ControllerAdvice(basePackages = "com.logistics.logisticsapp")
 public class GlobalExceptionHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OrderService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobal(Exception ex) {
 
