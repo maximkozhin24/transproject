@@ -1,6 +1,5 @@
 package com.logistics.logisticsapp.exception;
 
-import com.logistics.logisticsapp.service.OrderService;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import com.logistics.logisticsapp.dto.ErrorResponse;
