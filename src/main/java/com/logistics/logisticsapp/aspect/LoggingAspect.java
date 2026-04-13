@@ -25,32 +25,29 @@ public class LoggingAspect {
 
         long start = System.currentTimeMillis();
 
-        Object result;
-        Throwable error = null;
-
         try {
-            result = joinPoint.proceed();
-            return result;
-        } catch (Throwable ex) {
-            error = ex;
-            throw ex;
-        } finally {
+            Object result = joinPoint.proceed();
+
             long time = System.currentTimeMillis() - start;
 
-            if (error == null) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info("Method {} executed in {} ms",
-                        joinPoint.getSignature().toShortString(),
-                        time);
-                }
-            } else {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info("Method {} executed in {} ms",
-                        joinPoint.getSignature().toShortString(),
-                        error);
-                }
-            }
-        }
+            LOG.info("Method {} executed in {} ms",
+                joinPoint.getSignature().toShortString(),
+                time);
 
+            return result;
+
+        } catch (Exception ex) {
+
+            long time = System.currentTimeMillis() - start;
+
+            LOG.error("ERROR [{}] in {} after {} ms: {}",
+                "INTERNAL_ERROR",
+                joinPoint.getSignature().toShortString(),
+                time,
+                ex.getMessage(),
+                ex);
+
+            throw ex;
+        }
     }
 }
