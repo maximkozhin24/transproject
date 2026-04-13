@@ -42,13 +42,14 @@ public class LoggingAspect {
 
             long time = System.currentTimeMillis() - start;
 
-            LOG.error("ERROR [{}] in {} after {} ms: {}",
-                "INTERNAL_ERROR",
-                joinPoint.getSignature().toShortString(),
-                time,
-                ex.getMessage(),
-                ex);
-
+            if (LOG.isErrorEnabled()) {
+                LOG.error("ERROR [{}] in {} after {} ms: {}",
+                    "INTERNAL_ERROR",
+                    joinPoint.getSignature().toShortString(),
+                    time,
+                    ex.getMessage(),
+                    ex);
+            }
             throw ex;
         }
     }
