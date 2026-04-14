@@ -151,3 +151,9 @@ com.logistics.logisticsapp.exception.ResourceNotFoundException: Cargo not found
 2026-04-14 13:15:01 [http-nio-8080-exec-2] WARN  c.l.l.e.GlobalExceptionHandler - 400 VALIDATION_ERROR: name: Name must not be empty
 2026-04-14 13:18:24 [http-nio-8080-exec-1] WARN  c.l.l.e.GlobalExceptionHandler - 400 VALIDATION_ERROR: email: Email must be valid
 2026-04-14 13:20:26 [http-nio-8080-exec-3] INFO  c.l.l.aspect.LoggingAspect - Method ClientService.getAll() executed in 312 ms
+2026-04-14 13:24:36 [http-nio-8080-exec-4] INFO  c.l.l.aspect.LoggingAspect - Method ClientService.getAll() executed in 11 ms
+2026-04-14 13:25:19 [SpringApplicationShutdownHook] INFO  o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-04-14 13:25:19 [tomcat-shutdown] INFO  o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-04-14 13:25:19 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-14 13:25:19 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-14 13:25:19 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
