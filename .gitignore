@@ -34,5 +34,6 @@ build/
 /out/
 /.idea/
 resources
+
 /logs/
 /app.log/
