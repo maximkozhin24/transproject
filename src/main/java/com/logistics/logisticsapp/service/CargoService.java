@@ -86,26 +86,25 @@ public class CargoService {
         cargoRepository.delete(cargo);
     }
 
-    public void createTwoCargosNoTransaction(CargoRequestDto dto1, CargoRequestDto dto2) {
-        createTwoCargos(dto1, dto2);
+    public void createCargosBulkNoTransaction(List<CargoRequestDto> dtos) {
+        createCargosBulk(dtos);
     }
 
     @Transactional
-    public void createTwoCargosTransactional(CargoRequestDto dto1, CargoRequestDto dto2) {
-        createTwoCargos(dto1, dto2);
+    public void createCargosBulkTransactional(List<CargoRequestDto> dtos) {
+        createCargosBulk(dtos);
     }
 
-    private void createTwoCargos(CargoRequestDto dto1, CargoRequestDto dto2) {
+    private void createCargosBulk(List<CargoRequestDto> dtos) {
 
-        Cargo cargo1 = CargoMapper.toEntity(dto1);
-        cargoRepository.save(cargo1);
+        for (int i = 0; i < dtos.size(); i++) {
 
-        Cargo cargo2 = CargoMapper.toEntity(dto2);
+            Cargo cargo = CargoMapper.toEntity(dtos.get(i));
+            cargoRepository.save(cargo);
 
-        if (true) {
-            throw new IllegalStateException("Ошибка при сохранении второго cargo");
+            if (i == 1) {
+                throw new IllegalStateException("Ошибка при сохранении cargo #" + i);
+            }
         }
-
-        cargoRepository.save(cargo2);
     }
 }

@@ -77,26 +77,23 @@ public class CargoController {
         summary = "Создать несколько товаров",
         description = "Создаёт несколько товаров без транзакции"
     )
-    @PostMapping("/no-transaction")
-    public String createNoTransaction(@Valid @RequestBody TwoCargoRequest request) {
-
-        service.createTwoCargosNoTransaction(
-            request.getFirst(),
-            request.getSecond()
-        );
-        return "Done";
+    @PostMapping("/bulk/no-transaction")
+    public ResponseEntity<String> createBulkNoTx(
+        @RequestBody List<CargoRequestDto> dtos
+    ) {
+        service.createCargosBulkNoTransaction(dtos);
+        return ResponseEntity.ok("Cargos created (no transaction)");
     }
 
     @Operation(
         summary = "Создать несколько товаров",
         description = "Создаёт несколько товаров с транзакции"
     )
-    @PostMapping("/transaction")
-    public String createWithTransaction(@Valid @RequestBody TwoCargoRequest request) {
-        service.createTwoCargosTransactional(
-            request.getFirst(),
-            request.getSecond()
-        );
-        return "Done";
+    @PostMapping("/bulk/transactional")
+    public ResponseEntity<String> createBulkTx(
+        @RequestBody List<CargoRequestDto> dtos
+    ) {
+        service.createCargosBulkTransactional(dtos);
+        return ResponseEntity.ok("Cargos created (transactional)");
     }
 }
