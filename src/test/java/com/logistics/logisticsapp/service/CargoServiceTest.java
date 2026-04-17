@@ -42,7 +42,7 @@ class CargoServiceTest {
     private CargoRequestDto validCargo() {
         CargoRequestDto dto = new CargoRequestDto();
         dto.setName("Test");
-        dto.setWeight(10.0); // ← ОБЯЗАТЕЛЬНО
+        dto.setWeight(10.0);
         return dto;
     }
 

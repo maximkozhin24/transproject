@@ -16,6 +16,7 @@ import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RouteService {
@@ -50,12 +51,16 @@ public class RouteService {
             .map(RouteMapper::toDto)
             .toList();
     }
-    static final String ERROR_ROUTE = "Route not found";
-    public RouteResponseDto getById(Long id) {
-        Route route = routeRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ROUTE));
 
-        return RouteMapper.toDto(route);
+    static final String ERROR_ROUTE = "Route not found";
+
+    public RouteResponseDto getById(Long id) {
+
+        Optional<Route> routeOptional = routeRepository.findById(id);
+
+        return routeOptional
+            .map(RouteMapper::toDto)
+            .orElseThrow(() -> new ResourceNotFoundException(ERROR_ROUTE));
     }
 
     public RouteResponseDto update(Long id, RouteRequestDto dto) {
