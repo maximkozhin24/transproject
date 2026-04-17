@@ -59,8 +59,6 @@ class ClientServiceTest {
         requestDto.setPhone("123");
     }
 
-    // ---------------- GET ALL ----------------
-
     @Test
     void getAll_shouldReturnList() {
         when(repository.findAll()).thenReturn(List.of(client));
@@ -70,8 +68,6 @@ class ClientServiceTest {
         assertEquals(1, result.size());
         verify(repository).findAll();
     }
-
-    // ---------------- GET BY ID ----------------
 
     @Test
     void getById_shouldReturnClient() {
@@ -90,8 +86,6 @@ class ClientServiceTest {
         assertThrows(ResourceNotFoundException.class,
             () -> clientService.getById(1L));
     }
-
-    // ---------------- CREATE ----------------
 
     @Test
     void create_shouldSaveClient() {
@@ -127,8 +121,6 @@ class ClientServiceTest {
             () -> clientService.create(requestDto));
     }
 
-    // ---------------- UPDATE ----------------
-
     @Test
     void update_shouldModifyClient() {
         when(repository.findById(1L)).thenReturn(Optional.of(client));
@@ -147,8 +139,6 @@ class ClientServiceTest {
         assertThrows(ResourceNotFoundException.class,
             () -> clientService.update(1L, requestDto));
     }
-
-    // ---------------- DELETE (cascade logic) ----------------
 
     @Test
     void delete_shouldRemoveClientOrdersAndRelations() {
@@ -185,8 +175,6 @@ class ClientServiceTest {
             () -> clientService.delete(1L));
     }
 
-    // ---------------- EDGE CASE ----------------
-
     @Test
     void delete_shouldNotDeleteCargoIfUsedElsewhere() {
 
@@ -203,7 +191,6 @@ class ClientServiceTest {
         when(orderRepository.findAllByClientId(1L)).thenReturn(List.of(order));
         when(rvcRepository.findAllByOrderId(10L)).thenReturn(List.of(rvc));
 
-        // cargo still used somewhere else
         when(rvcRepository.existsByCargoId(100L)).thenReturn(true);
 
         clientService.delete(1L);

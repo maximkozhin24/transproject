@@ -27,8 +27,6 @@ class OrderServiceTest {
 
     @InjectMocks OrderService orderService;
 
-    // ---------------- HELPERS ----------------
-
     private OrderRequestDto validDto() {
         OrderRequestDto dto = new OrderRequestDto();
         dto.setPrice(100.0);
@@ -49,12 +47,10 @@ class OrderServiceTest {
         return dto;
     }
 
-    // ---------------- CREATE EDGE CASES ----------------
-
     @Test
     void create_shouldThrowIfItemsNull() {
 
-        OrderRequestDto dto = dtoWithoutItems(); // ← вынесли
+        OrderRequestDto dto = dtoWithoutItems();
 
         assertThrows(IllegalStateException.class,
             () -> orderService.create(dto));
@@ -64,7 +60,7 @@ class OrderServiceTest {
     void create_shouldThrowIfItemsEmpty() {
 
         OrderRequestDto dto = validDto();
-        dto.setItems(List.of()); // ← единственная причина ошибки
+        dto.setItems(List.of());
 
         assertThrows(IllegalStateException.class,
             () -> orderService.create(dto));
@@ -143,8 +139,6 @@ class OrderServiceTest {
         verify(rvcRepository).save(any(RouteVehicleCargo.class));
     }
 
-    // ---------------- UPDATE clientId NULL branch ----------------
-
     @Test
     void update_shouldNotSetClientIfNull() {
 
@@ -185,8 +179,6 @@ class OrderServiceTest {
 
         verify(clientRepository).findById(1L);
     }
-
-    // ---------------- DELETE usedElsewhere branches ----------------
 
     @Test
     void delete_shouldNotDeleteCargoIfUsedElsewhere() {
@@ -240,8 +232,6 @@ class OrderServiceTest {
         verify(cargoRepository).delete(cargo);
     }
 
-    // ---------------- NATIVE QUERY (Object[]) FULL COVERAGE ----------------
-
     @Test
     void native_shouldHandleNullValues() {
 
@@ -283,25 +273,19 @@ class OrderServiceTest {
             result.get(0).getRouteVehicleCargoList().size());
     }
 
-    // ---------------- CACHE FULL COVERAGE ----------------
-
     @Test
     void cache_shouldHitAndMiss() {
 
         when(orderRepository.findOrdersByCargoName("TV"))
             .thenReturn(List.of(new Order()));
 
-        // MISS
         orderService.getOrdersByCargoCached("TV");
 
-        // HIT
         orderService.getOrdersByCargoCached("TV");
 
         verify(orderRepository, times(1))
             .findOrdersByCargoName("TV");
     }
-
-    // ---------------- PAGINATION ----------------
 
     @Test
     void getAll_shouldReturnPage() {
@@ -317,8 +301,6 @@ class OrderServiceTest {
         assertEquals(1, result.getContent().size());
     }
 
-    // ---------------- OPTIMIZED ----------------
-
     @Test
     void getAllOptimized_shouldWork() {
 
@@ -330,8 +312,6 @@ class OrderServiceTest {
 
         assertEquals(1, result.size());
     }
-
-    // ---------------- GET BY ID ----------------
 
     @Test
     void getById_shouldThrow() {

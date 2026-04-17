@@ -51,8 +51,6 @@ class VehicleServiceTest {
         requestDto.setCapacity(1000.0);
     }
 
-    // ---------------- CREATE ----------------
-
     @Test
     void create_shouldSaveVehicle() {
 
@@ -78,8 +76,6 @@ class VehicleServiceTest {
             () -> vehicleService.create(requestDto));
     }
 
-    // ---------------- GET ALL ----------------
-
     @Test
     void getAll_shouldReturnList() {
 
@@ -90,8 +86,6 @@ class VehicleServiceTest {
 
         assertEquals(1, result.size());
     }
-
-    // ---------------- GET BY ID ----------------
 
     @Test
     void getById_shouldReturnVehicle() {
@@ -113,8 +107,6 @@ class VehicleServiceTest {
         assertThrows(ResourceNotFoundException.class,
             () -> vehicleService.getById(1L));
     }
-
-    // ---------------- UPDATE ----------------
 
     @Test
     void update_shouldModifyVehicle() {
@@ -141,8 +133,6 @@ class VehicleServiceTest {
         assertThrows(ResourceNotFoundException.class,
             () -> vehicleService.update(1L, requestDto));
     }
-
-    // ---------------- ASSIGN VEHICLE ----------------
 
     @Test
     void assignVehicle_shouldAssignToAllRelations() {
@@ -198,8 +188,6 @@ class VehicleServiceTest {
         assertThrows(IllegalStateException.class,
             () -> vehicleService.assignVehicle(dto));
     }
-
-    // ---------------- DELETE ----------------
 
     @Test
     void delete_shouldClearRelationsAndDeleteVehicle() {

@@ -39,6 +39,13 @@ class CargoServiceTest {
     private Cargo cargo;
     private CargoRequestDto requestDto;
 
+    private CargoRequestDto validCargo() {
+        CargoRequestDto dto = new CargoRequestDto();
+        dto.setName("Test");
+        dto.setWeight(10.0); // ← ОБЯЗАТЕЛЬНО
+        return dto;
+    }
+
     @BeforeEach
     void setUp() {
         cargo = new Cargo();
@@ -50,8 +57,6 @@ class CargoServiceTest {
         requestDto.setName("Test");
         requestDto.setWeight(100.0);
     }
-
-    // ---------------- CREATE ----------------
 
     @Test
     void create_shouldSaveAndReturnDto() {
@@ -67,8 +72,6 @@ class CargoServiceTest {
         verify(cargoRepository, times(1)).save(any(Cargo.class));
     }
 
-    // ---------------- GET ALL ----------------
-
     @Test
     void getAll_shouldReturnList() {
         when(cargoRepository.findAll()).thenReturn(List.of(cargo));
@@ -78,8 +81,6 @@ class CargoServiceTest {
         assertEquals(1, result.size());
         verify(cargoRepository).findAll();
     }
-
-    // ---------------- GET BY ID ----------------
 
     @Test
     void getById_shouldReturnCargo() {
@@ -99,8 +100,6 @@ class CargoServiceTest {
             () -> cargoService.getById(1L));
     }
 
-    // ---------------- UPDATE ----------------
-
     @Test
     void update_shouldModifyAndSave() {
         when(cargoRepository.findById(1L)).thenReturn(Optional.of(cargo));
@@ -119,8 +118,6 @@ class CargoServiceTest {
         assertThrows(ResourceNotFoundException.class,
             () -> cargoService.update(1L, requestDto));
     }
-
-    // ---------------- DELETE (cascade logic) ----------------
 
     @Test
     void delete_shouldRemoveCargoAndRelations() {
@@ -149,8 +146,6 @@ class CargoServiceTest {
             () -> cargoService.delete(1L));
     }
 
-    // ---------------- BULK NON-TRANSACTIONAL ----------------
-
     @Test
     void createBulkNoTransaction_shouldThrowMidway() {
         List<CargoRequestDto> dtos = List.of(
@@ -163,8 +158,6 @@ class CargoServiceTest {
             () -> cargoService.createCargosBulkNoTransaction(dtos));
     }
 
-    // ---------------- BULK TRANSACTIONAL ----------------
-
     @Test
     void createBulkTransactional_shouldRollbackOnException() {
         List<CargoRequestDto> dtos = List.of(
@@ -176,7 +169,88 @@ class CargoServiceTest {
         assertThrows(IllegalStateException.class,
             () -> cargoService.createCargosBulkTransactional(dtos));
 
-        // при реальной БД проверялся бы rollback
         verify(cargoRepository, atLeastOnce()).save(any());
+    }
+
+    @Test
+    void bulkNoTransaction_shouldThrow() {
+
+        List<CargoRequestDto> dtos = List.of(
+            validCargo(),
+            validCargo(),
+            validCargo()
+        );
+
+        assertThrows(IllegalStateException.class,
+            () -> cargoService.createCargosBulkNoTransaction(dtos));
+    }
+
+    @Test
+    void delete_shouldNotDeleteOrderIfStillHasRelations() {
+
+        Cargo cargo = new Cargo();
+        cargo.setId(1L);
+
+        Order order = new Order();
+        order.setId(10L);
+
+        RouteVehicleCargo rvc = mock(RouteVehicleCargo.class);
+        when(rvc.getOrder()).thenReturn(order);
+
+        when(cargoRepository.findById(1L))
+            .thenReturn(Optional.of(cargo));
+
+        when(rvcRepository.findAllByCargoId(1L))
+            .thenReturn(List.of(rvc));
+
+        when(rvcRepository.findAllByOrderId(10L))
+            .thenReturn(List.of(new RouteVehicleCargo()));
+
+        cargoService.delete(1L);
+
+        verify(orderRepository, never()).delete(any());
+        verify(cargoRepository).delete(cargo);
+    }
+
+    @Test
+    void delete_shouldHandleNoRelations() {
+
+        Cargo cargo = new Cargo();
+        cargo.setId(1L);
+
+        when(cargoRepository.findById(1L))
+            .thenReturn(Optional.of(cargo));
+
+        when(rvcRepository.findAllByCargoId(1L))
+            .thenReturn(List.of());
+
+        cargoService.delete(1L);
+
+        verify(rvcRepository).deleteAll(List.of());
+        verify(cargoRepository).delete(cargo);
+    }
+
+    @Test
+    void bulkTransactional_shouldThrow() {
+
+        List<CargoRequestDto> dtos = List.of(
+            validCargo(),
+            validCargo(),
+            validCargo()
+        );
+
+        assertThrows(IllegalStateException.class,
+            () -> cargoService.createCargosBulkTransactional(dtos));
+    }
+
+    @Test
+    void getAll_shouldReturnEmptyList() {
+
+        when(cargoRepository.findAll())
+            .thenReturn(List.of());
+
+        List<CargoResponseDto> result = cargoService.getAll();
+
+        assertTrue(result.isEmpty());
     }
 }

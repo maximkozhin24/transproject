@@ -165,7 +165,7 @@ class RouteServiceTest {
 
         routeService.delete(1L);
 
-        verify(cargoRepository, never()).delete(cargo); // 💥 важно
+        verify(cargoRepository, never()).delete(cargo);
         verify(orderRepository).delete(order);
     }
 
