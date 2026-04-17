@@ -73,13 +73,12 @@ public class OrderService {
             throw new IllegalStateException("Items must not be empty");
         }
 
+        Client client = clientRepository.findById(dto.getClientId())
+            .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         Order order = new Order();
         order.setPrice(dto.getPrice());
         order.setStatus(dto.getStatus());
-
-        Client client = clientRepository.findById(dto.getClientId())
-            .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         order.setClient(client);
 

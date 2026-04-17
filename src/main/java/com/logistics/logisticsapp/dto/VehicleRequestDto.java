@@ -16,6 +16,10 @@ public class VehicleRequestDto {
         return plateNumber;
     }
 
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
     public String getModel() {
         return model;
     }
@@ -26,5 +30,9 @@ public class VehicleRequestDto {
 
     public double getCapacity() {
         return capacity;
+    }
+
+    public void setCapacity(Double capacity) {
+        this.capacity = capacity;
     }
 }

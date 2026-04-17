@@ -2,10 +2,9 @@ package com.logistics.logisticsapp.service;
 
 import com.logistics.logisticsapp.dto.RouteRequestDto;
 import com.logistics.logisticsapp.dto.RouteResponseDto;
-import com.logistics.logisticsapp.entity.Route;
+import com.logistics.logisticsapp.entity.*;
 import com.logistics.logisticsapp.exception.ResourceNotFoundException;
-import com.logistics.logisticsapp.repository.RouteRepository;
-import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
+import com.logistics.logisticsapp.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,18 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import com.logistics.logisticsapp.dto.RouteRequestDto;
-import com.logistics.logisticsapp.dto.RouteResponseDto;
 import com.logistics.logisticsapp.entity.Route;
 import com.logistics.logisticsapp.repository.RouteRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import java.util.List;
-import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RouteServiceTest {
@@ -36,6 +26,12 @@ class RouteServiceTest {
 
     @Mock
     private RouteVehicleCargoRepository rvcRepository;
+
+    @Mock
+    private CargoRepository cargoRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private RouteService routeService;
@@ -117,7 +113,79 @@ class RouteServiceTest {
         verify(routeRepository).delete(route);
     }
     @Test
-    void delete_shouldThrowException() {
+    void delete_shouldDeleteEverything() {
+
+        Route route = new Route();
+        route.setId(1L);
+
+        Order order = new Order();
+        order.setId(10L);
+
+        Cargo cargo = new Cargo();
+        cargo.setId(100L);
+
+        RouteVehicleCargo rvc = new RouteVehicleCargo();
+        rvc.setOrder(order);
+        rvc.setCargo(cargo);
+
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
+        when(rvcRepository.findAllByRouteId(1L)).thenReturn(List.of(rvc));
+        when(rvcRepository.findAllByOrderId(10L)).thenReturn(List.of(rvc));
+        when(rvcRepository.existsByCargoId(100L)).thenReturn(false);
+
+        routeService.delete(1L);
+
+        verify(cargoRepository).delete(cargo);
+        verify(orderRepository).delete(order);
+        verify(routeRepository).delete(route);
+        verify(rvcRepository).deleteAll(anyList());
+    }
+
+    @Test
+    void delete_shouldNotDeleteCargo_ifUsedElsewhere() {
+
+        Route route = new Route();
+        route.setId(1L);
+
+        Order order = new Order();
+        order.setId(10L);
+
+        Cargo cargo = new Cargo();
+        cargo.setId(100L);
+
+        RouteVehicleCargo rvc = new RouteVehicleCargo();
+        rvc.setOrder(order);
+        rvc.setCargo(cargo);
+
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
+        when(rvcRepository.findAllByRouteId(1L)).thenReturn(List.of(rvc));
+        when(rvcRepository.findAllByOrderId(10L)).thenReturn(List.of(rvc));
+        when(rvcRepository.existsByCargoId(100L)).thenReturn(true);
+
+        routeService.delete(1L);
+
+        verify(cargoRepository, never()).delete(cargo); // 💥 важно
+        verify(orderRepository).delete(order);
+    }
+
+    @Test
+    void delete_shouldWork_whenNoRelations() {
+
+        Route route = new Route();
+        route.setId(1L);
+
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
+        when(rvcRepository.findAllByRouteId(1L)).thenReturn(List.of());
+
+        routeService.delete(1L);
+
+        verify(routeRepository).delete(route);
+        verifyNoInteractions(orderRepository);
+        verifyNoInteractions(cargoRepository);
+    }
+
+    @Test
+    void delete_shouldThrowException_ifRouteNotFound() {
 
         when(routeRepository.findById(1L)).thenReturn(Optional.empty());
 
