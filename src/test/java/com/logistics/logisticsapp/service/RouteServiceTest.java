@@ -97,7 +97,9 @@ class RouteServiceTest {
 
         RouteResponseDto result = routeService.update(1L, dto);
 
-        assertEquals("X", route1.getStartLocation());
+        assertEquals("X", result.getStartLocation());
+        assertEquals("Y", result.getEndLocation());
+
         verify(routeRepository).save(route1);
     }
 
