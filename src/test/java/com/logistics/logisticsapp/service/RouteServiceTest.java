@@ -35,15 +35,15 @@ class RouteServiceTest {
     @InjectMocks
     private RouteService routeService;
 
-    private Route route;
+    private Route route1;
 
     @BeforeEach
     void setup() {
-        route = new Route();
-        route.setId(1L);
-        route.setStartLocation("A");
-        route.setEndLocation("B");
-        route.setDistance(100);
+        route1 = new Route();
+        route1.setId(1L);
+        route1.setStartLocation("A");
+        route1.setEndLocation("B");
+        route1.setDistance(100);
     }
 
     @Test
@@ -54,7 +54,7 @@ class RouteServiceTest {
         dto.setEndLocation("B");
         dto.setDistance(100);
 
-        when(routeRepository.save(any(Route.class))).thenReturn(route);
+        when(routeRepository.save(any(Route.class))).thenReturn(route1);
 
         RouteResponseDto result = routeService.create(dto);
 
@@ -66,7 +66,7 @@ class RouteServiceTest {
     @Test
     void getAll_shouldReturnList() {
 
-        when(routeRepository.findAll()).thenReturn(List.of(route));
+        when(routeRepository.findAll()).thenReturn(List.of(route1));
 
         List<RouteResponseDto> result = routeService.getAll();
 
@@ -77,7 +77,7 @@ class RouteServiceTest {
     @Test
     void getById_shouldReturnRoute() {
 
-        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(route1));
 
         RouteResponseDto result = routeService.getById(1L);
 
@@ -92,24 +92,24 @@ class RouteServiceTest {
         dto.setEndLocation("Y");
         dto.setDistance(200);
 
-        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
-        when(routeRepository.save(any(Route.class))).thenReturn(route);
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(route1));
+        when(routeRepository.save(any(Route.class))).thenReturn(route1);
 
         RouteResponseDto result = routeService.update(1L, dto);
 
-        assertEquals("X", route.getStartLocation());
-        verify(routeRepository).save(route);
+        assertEquals("X", route1.getStartLocation());
+        verify(routeRepository).save(route1);
     }
 
     @Test
     void delete_shouldCallRepository() {
 
-        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(route1));
         when(rvcRepository.findAllByRouteId(1L)).thenReturn(List.of());
 
         routeService.delete(1L);
 
-        verify(routeRepository).delete(route);
+        verify(routeRepository).delete(route1);
     }
     @Test
     void delete_shouldDeleteEverything() {

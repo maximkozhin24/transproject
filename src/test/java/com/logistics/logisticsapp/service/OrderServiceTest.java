@@ -49,18 +49,15 @@ class OrderServiceTest {
         return dto;
     }
 
-    private OrderRequestDto dtoWithEmptyItems() {
-        OrderRequestDto dto = validDto();
-        dto.setItems(List.of());
-        return dto;
-    }
-
     // ---------------- CREATE EDGE CASES ----------------
 
     @Test
     void create_shouldThrowIfItemsNull() {
+
+        OrderRequestDto dto = dtoWithoutItems(); // ← вынесли
+
         assertThrows(IllegalStateException.class,
-            () -> orderService.create(dtoWithoutItems()));
+            () -> orderService.create(dto));
     }
 
     @Test
