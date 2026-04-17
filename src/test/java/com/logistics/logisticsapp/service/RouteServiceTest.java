@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import com.logistics.logisticsapp.entity.Route;
 import com.logistics.logisticsapp.repository.RouteRepository;
-import org.mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RouteServiceTest {
@@ -115,8 +114,8 @@ class RouteServiceTest {
     @Test
     void delete_shouldDeleteEverything() {
 
-        Route route = new Route();
-        route.setId(1L);
+        Route routte = new Route();
+        routte.setId(1L);
 
         Order order = new Order();
         order.setId(10L);
@@ -128,7 +127,7 @@ class RouteServiceTest {
         rvc.setOrder(order);
         rvc.setCargo(cargo);
 
-        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(routte));
         when(rvcRepository.findAllByRouteId(1L)).thenReturn(List.of(rvc));
         when(rvcRepository.findAllByOrderId(10L)).thenReturn(List.of(rvc));
         when(rvcRepository.existsByCargoId(100L)).thenReturn(false);
@@ -137,7 +136,7 @@ class RouteServiceTest {
 
         verify(cargoRepository).delete(cargo);
         verify(orderRepository).delete(order);
-        verify(routeRepository).delete(route);
+        verify(routeRepository).delete(routte);
         verify(rvcRepository).deleteAll(anyList());
     }
 
@@ -171,15 +170,15 @@ class RouteServiceTest {
     @Test
     void delete_shouldWork_whenNoRelations() {
 
-        Route route = new Route();
-        route.setId(1L);
+        Route routte = new Route();
+        routte.setId(1L);
 
-        when(routeRepository.findById(1L)).thenReturn(Optional.of(route));
+        when(routeRepository.findById(1L)).thenReturn(Optional.of(routte));
         when(rvcRepository.findAllByRouteId(1L)).thenReturn(List.of());
 
         routeService.delete(1L);
 
-        verify(routeRepository).delete(route);
+        verify(routeRepository).delete(routte);
         verifyNoInteractions(orderRepository);
         verifyNoInteractions(cargoRepository);
     }

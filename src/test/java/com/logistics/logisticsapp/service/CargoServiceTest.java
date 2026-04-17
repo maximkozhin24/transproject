@@ -9,7 +9,6 @@ import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.repository.CargoRepository;
 import com.logistics.logisticsapp.repository.OrderRepository;
 import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
-import com.logistics.logisticsapp.service.CargoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

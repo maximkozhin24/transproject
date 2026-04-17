@@ -65,10 +65,13 @@ class OrderServiceTest {
 
     @Test
     void create_shouldThrowIfItemsEmpty() {
-        assertThrows(IllegalStateException.class,
-            () -> orderService.create(dtoWithEmptyItems()));
-    }
 
+        OrderRequestDto dto = validDto();
+        dto.setItems(List.of()); // ← единственная причина ошибки
+
+        assertThrows(IllegalStateException.class,
+            () -> orderService.create(dto));
+    }
     @Test
     void create_shouldThrowIfClientNotFound() {
 
