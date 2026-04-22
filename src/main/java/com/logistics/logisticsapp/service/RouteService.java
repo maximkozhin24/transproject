@@ -52,24 +52,6 @@ public class RouteService {
             .toList();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     static final String ERROR_ROUTE = "Route not found";
 
     public RouteResponseDto getById(Long id) {
