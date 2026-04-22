@@ -95,4 +95,15 @@ public class CargoController {
         service.createCargosBulkTransactional(dtos);
         return ResponseEntity.ok("Cargos created (transactional)");
     }
+
+    @Operation(
+        summary = "Создать несколько товаров",
+        description = "Создаёт несколько товаров с транзакции"
+    )
+    @PostMapping("/bulk")
+    public ResponseEntity<List<CargoResponseDto>> createBulk(
+        @RequestBody List<CargoRequestDto> dtos
+    ) {
+        return ResponseEntity.ok(service.createCargoBulk(dtos));
+    }
 }

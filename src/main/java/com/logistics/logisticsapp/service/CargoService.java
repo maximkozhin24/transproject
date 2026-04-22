@@ -107,4 +107,18 @@ public class CargoService {
             }
         }
     }
+
+    @Transactional
+    public List<CargoResponseDto> createCargoBulk(List<CargoRequestDto> dtos) {
+
+        List<Cargo> cargos = dtos.stream()
+            .map(CargoMapper::toEntity)
+            .toList();
+
+        List<Cargo> saved = cargoRepository.saveAll(cargos);
+
+        return saved.stream()
+            .map(CargoMapper::toDto)
+            .toList();
+    }
 }

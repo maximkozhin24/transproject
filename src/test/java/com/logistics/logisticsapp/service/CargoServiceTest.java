@@ -184,4 +184,20 @@ class CargoServiceTest {
         assertThrows(IllegalStateException.class,
             () -> cargoService.createCargosBulkNoTransaction(dtos));
     }
+    @Test
+    void createCargosBulk_shouldSaveAll() {
+
+        List<CargoRequestDto> dtos = List.of(
+            validCargo(),
+            validCargo()
+        );
+
+        when(cargoRepository.saveAll(anyList()))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        List<CargoResponseDto> result = cargoService.createCargoBulk(dtos);
+
+        assertEquals(2, result.size());
+        verify(cargoRepository).saveAll(anyList());
+    }
 }
