@@ -34,8 +34,8 @@ public class VehicleAsyncService {
             resultMap.put(taskId, result);
             statusMap.put(taskId, TaskStatus.COMPLETED);
 
-        } catch (Exception e) {
-            statusMap.put(taskId, TaskStatus.FAILED);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }

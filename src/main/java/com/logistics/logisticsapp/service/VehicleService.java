@@ -15,7 +15,8 @@ import com.logistics.logisticsapp.repository.RouteVehicleCargoRepository;
 import com.logistics.logisticsapp.repository.VehicleRepository;
 
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class VehicleService {
     private final RouteVehicleCargoRepository rvcRepository;
     private final RequestCounter counter;
     private final ExecutorService vehicleExecutor;
-
+    private static final Logger LOG = LoggerFactory.getLogger(VehicleService.class);
     private final Map<String, TaskStatus> statusMap = new ConcurrentHashMap<>();
     private final Map<String, List<VehicleResponseDto>> resultMap = new ConcurrentHashMap<>();
 
@@ -60,7 +61,7 @@ public class VehicleService {
 
     public List<VehicleResponseDto> getAll() {
         int count = counter.incrementAndGet();
-        System.out.println("Запрос getAll вызван: " + count + " раз");
+        LOG.info("Запрос getAll вызван: " + count + " раз");
         return vehicleRepository.findAll()
             .stream()
             .map(VehicleMapper::toDto)
@@ -150,7 +151,7 @@ public class VehicleService {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException ignored) {
-
+                    Thread.currentThread().interrupt();
                 }
 
                 sharedList.add(new VehicleResponseDto());
@@ -187,7 +188,7 @@ public class VehicleService {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException ignored) {
-
+                    Thread.currentThread().interrupt();
                 }
 
                 safeList.add(new VehicleResponseDto());
@@ -198,7 +199,7 @@ public class VehicleService {
             try {
                 f.get();
             } catch (Exception ignored) {
-
+                Thread.currentThread().interrupt();
             }
         }
 
