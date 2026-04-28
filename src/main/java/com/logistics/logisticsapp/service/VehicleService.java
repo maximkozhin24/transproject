@@ -162,7 +162,7 @@ public class VehicleService {
             try {
                 f.get();
             } catch (Exception ignored) {
-
+                Thread.currentThread().interrupt();
             }
         }
 
