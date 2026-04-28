@@ -1,9 +1,12 @@
 package com.logistics.logisticsapp.service;
 
+import com.logistics.logisticsapp.RequestCounter;
 import com.logistics.logisticsapp.dto.AssignVehicleDto;
+import com.logistics.logisticsapp.dto.RaceConditionReport;
 import com.logistics.logisticsapp.dto.VehicleRequestDto;
 import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.entity.RouteVehicleCargo;
+import com.logistics.logisticsapp.entity.TaskStatus;
 import com.logistics.logisticsapp.entity.Vehicle;
 import com.logistics.logisticsapp.exception.ConflictException;
 import com.logistics.logisticsapp.exception.ResourceNotFoundException;
@@ -13,18 +16,35 @@ import com.logistics.logisticsapp.repository.VehicleRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 @Service
 public class VehicleService {
-
+    private final VehicleAsyncService asyncService;
     private final VehicleRepository vehicleRepository;
     private final RouteVehicleCargoRepository rvcRepository;
+    private final RequestCounter counter;
+    private final ExecutorService vehicleExecutor;
+
+    private final Map<String, TaskStatus> statusMap = new ConcurrentHashMap<>();
+    private final Map<String, List<VehicleResponseDto>> resultMap = new ConcurrentHashMap<>();
 
     public VehicleService(VehicleRepository vehicleRepository,
-                          RouteVehicleCargoRepository rvcRepository) {
+                          RouteVehicleCargoRepository rvcRepository,
+                          VehicleAsyncService asyncService,
+                          RequestCounter counter,
+                          ExecutorService vehicleExecutor) {
         this.vehicleRepository = vehicleRepository;
         this.rvcRepository = rvcRepository;
+        this.asyncService = asyncService;
+        this.counter = counter;
+        this.vehicleExecutor = vehicleExecutor;
     }
 
     public VehicleResponseDto create(VehicleRequestDto dto) {
@@ -39,6 +59,8 @@ public class VehicleService {
     }
 
     public List<VehicleResponseDto> getAll() {
+        int count = counter.incrementAndGet();
+        System.out.println("Запрос getAll вызван: " + count + " раз");
         return vehicleRepository.findAll()
             .stream()
             .map(VehicleMapper::toDto)
@@ -93,5 +115,96 @@ public class VehicleService {
         }
 
         vehicleRepository.delete(vehicle);
+    }
+
+    public String getAllAsync() {
+        String taskId = UUID.randomUUID().toString();
+
+        statusMap.put(taskId, TaskStatus.IN_PROGRESS);
+
+        asyncService.processGetAll(taskId, statusMap, resultMap);
+
+        return taskId;
+    }
+
+    public TaskStatus getStatus(String taskId) {
+        return statusMap.get(taskId);
+    }
+
+    public List<VehicleResponseDto> getResult(String taskId) {
+        return resultMap.get(taskId);
+    }
+
+    public RaceConditionReport runBadRaceConditionDemo() {
+
+        int tasks = 500;
+
+        List<VehicleResponseDto> sharedList = new ArrayList<>();
+
+        List<Future<?>> futures = new ArrayList<>();
+
+        for (int i = 0; i < tasks; i++) {
+
+            futures.add(vehicleExecutor.submit(() -> {
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ignored) {
+
+                }
+
+                sharedList.add(new VehicleResponseDto());
+            }));
+        }
+
+        for (Future<?> f : futures) {
+            try {
+                f.get();
+            } catch (Exception ignored) {
+
+            }
+        }
+
+        int expected = tasks;
+        int actual = sharedList.size();
+
+        return new RaceConditionReport(expected, actual);
+    }
+
+    public RaceConditionReport runFixedRaceConditionDemo() {
+
+        int tasks = 500;
+
+        List<VehicleResponseDto> safeList =
+            java.util.Collections.synchronizedList(new ArrayList<>());
+
+        List<Future<?>> futures = new ArrayList<>();
+
+        for (int i = 0; i < tasks; i++) {
+
+            futures.add(vehicleExecutor.submit(() -> {
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ignored) {
+
+                }
+
+                safeList.add(new VehicleResponseDto());
+            }));
+        }
+
+        for (Future<?> f : futures) {
+            try {
+                f.get();
+            } catch (Exception ignored) {
+
+            }
+        }
+
+        int expected = tasks;
+        int actual = safeList.size();
+
+        return new RaceConditionReport(expected, actual);
     }
 }

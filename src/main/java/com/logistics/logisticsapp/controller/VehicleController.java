@@ -1,8 +1,10 @@
 package com.logistics.logisticsapp.controller;
 
 import com.logistics.logisticsapp.dto.AssignVehicleDto;
+import com.logistics.logisticsapp.dto.RaceConditionReport;
 import com.logistics.logisticsapp.dto.VehicleRequestDto;
 import com.logistics.logisticsapp.dto.VehicleResponseDto;
+import com.logistics.logisticsapp.entity.TaskStatus;
 import com.logistics.logisticsapp.service.VehicleService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -84,5 +86,32 @@ public class VehicleController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         vehicleService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/async")
+    public ResponseEntity<String> getAllAsync() {
+        return ResponseEntity.ok(vehicleService.getAllAsync());
+    }
+
+    // 🔄 статус
+    @GetMapping("/async/status/{taskId}")
+    public ResponseEntity<TaskStatus> getStatus(@PathVariable String taskId) {
+        return ResponseEntity.ok(vehicleService.getStatus(taskId));
+    }
+
+    // 📦 результат
+    @GetMapping("/async/result/{taskId}")
+    public ResponseEntity<List<VehicleResponseDto>> getResult(@PathVariable String taskId) {
+        return ResponseEntity.ok(vehicleService.getResult(taskId));
+    }
+
+    @GetMapping("/race-condition/bad")
+    public ResponseEntity<RaceConditionReport> runBadRaceCondition() {
+        return ResponseEntity.ok(vehicleService.runBadRaceConditionDemo());
+    }
+
+    @GetMapping("/race-condition/fixed")
+    public ResponseEntity<RaceConditionReport> runFixedRaceCondition() {
+        return ResponseEntity.ok(vehicleService.runFixedRaceConditionDemo());
     }
 }
