@@ -105,7 +105,7 @@ public class VehicleController {
     }
 
     @Operation(
-        summary = "Вывод результата асинхронной"
+        summary = "Вывод результата асинхронной операции"
     )
     @GetMapping("/async/result/{taskId}")
     public ResponseEntity<List<VehicleResponseDto>> getResult(@PathVariable String taskId) {
@@ -121,7 +121,7 @@ public class VehicleController {
     }
 
     @Operation(
-        summary = "Демонтсрация решения race conditon"
+        summary = "Демонстрация решения race conditon"
     )
     @GetMapping("/race-condition/fixed")
     public ResponseEntity<RaceConditionReport> runFixedRaceCondition() {
