@@ -93,13 +93,11 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.getAllAsync());
     }
 
-    // 🔄 статус
     @GetMapping("/async/status/{taskId}")
     public ResponseEntity<TaskStatus> getStatus(@PathVariable String taskId) {
         return ResponseEntity.ok(vehicleService.getStatus(taskId));
     }
 
-    // 📦 результат
     @GetMapping("/async/result/{taskId}")
     public ResponseEntity<List<VehicleResponseDto>> getResult(@PathVariable String taskId) {
         return ResponseEntity.ok(vehicleService.getResult(taskId));
