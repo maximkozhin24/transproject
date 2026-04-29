@@ -88,26 +88,41 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+        summary = "Асинхронная операция вывода машин"
+    )
     @PostMapping("/async")
     public ResponseEntity<String> getAllAsync() {
         return ResponseEntity.ok(vehicleService.getAllAsync());
     }
 
+    @Operation(
+        summary = "Вывод статуса выполнения асинхронной операции"
+    )
     @GetMapping("/async/status/{taskId}")
     public ResponseEntity<TaskStatus> getStatus(@PathVariable String taskId) {
         return ResponseEntity.ok(vehicleService.getStatus(taskId));
     }
 
+    @Operation(
+        summary = "Вывод результата асинхронной"
+    )
     @GetMapping("/async/result/{taskId}")
     public ResponseEntity<List<VehicleResponseDto>> getResult(@PathVariable String taskId) {
         return ResponseEntity.ok(vehicleService.getResult(taskId));
     }
 
+    @Operation(
+        summary = "Демонстрация race condition"
+    )
     @GetMapping("/race-condition/bad")
     public ResponseEntity<RaceConditionReport> runBadRaceCondition() {
         return ResponseEntity.ok(vehicleService.runBadRaceConditionDemo());
     }
 
+    @Operation(
+        summary = "Демонтсрация решения race conditon"
+    )
     @GetMapping("/race-condition/fixed")
     public ResponseEntity<RaceConditionReport> runFixedRaceCondition() {
         return ResponseEntity.ok(vehicleService.runFixedRaceConditionDemo());

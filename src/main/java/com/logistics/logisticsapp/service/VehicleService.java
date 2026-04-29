@@ -61,7 +61,7 @@ public class VehicleService {
 
     public List<VehicleResponseDto> getAll() {
         int count = counter.incrementAndGet();
-        LOG.info("Запрос getAll вызван: " + count + " раз");
+        LOG.info("Запрос getAll вызван: {} раз", count);
         return vehicleRepository.findAll()
             .stream()
             .map(VehicleMapper::toDto)
