@@ -5,7 +5,6 @@ import com.logistics.logisticsapp.dto.RaceConditionReport;
 import com.logistics.logisticsapp.dto.VehicleRequestDto;
 import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.entity.TaskStatus;
-import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.service.VehicleService;
 
 import io.swagger.v3.oas.annotations.Operation;
