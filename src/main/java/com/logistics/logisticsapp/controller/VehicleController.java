@@ -109,16 +109,16 @@ public class VehicleController {
         summary = "Вывод результата асинхронной операции"
     )
     @GetMapping("/async/result/{taskId}")
-    public ResponseEntity<List<VehicleResponseDto>> getResult(@PathVariable String taskId) {
+    public ResponseEntity<?> getResult(@PathVariable String taskId) {
 
         TaskStatus status = vehicleService.getStatus(taskId);
 
         if (status == null) {
-            throw new ResourceNotFoundException("Task not found");
+            return ResponseEntity.ok("Task not found");
         }
 
         if (status != TaskStatus.COMPLETED) {
-            throw new IllegalStateException("Task is not completed yet");
+            return ResponseEntity.ok("Task is not completed yet");
         }
 
         return ResponseEntity.ok(vehicleService.getResult(taskId));
