@@ -5,6 +5,7 @@ import com.logistics.logisticsapp.dto.RaceConditionReport;
 import com.logistics.logisticsapp.dto.VehicleRequestDto;
 import com.logistics.logisticsapp.dto.VehicleResponseDto;
 import com.logistics.logisticsapp.entity.TaskStatus;
+import com.logistics.logisticsapp.exception.ResourceNotFoundException;
 import com.logistics.logisticsapp.service.VehicleService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -108,17 +109,16 @@ public class VehicleController {
         summary = "Вывод результата асинхронной операции"
     )
     @GetMapping("/async/result/{taskId}")
-    public ResponseEntity<?> getResult(@PathVariable String taskId) {
+    public ResponseEntity<List<VehicleResponseDto>> getResult(@PathVariable String taskId) {
 
         TaskStatus status = vehicleService.getStatus(taskId);
 
         if (status == null) {
-            return ResponseEntity.notFound().build();
+            throw new ResourceNotFoundException("Task not found");
         }
 
         if (status != TaskStatus.COMPLETED) {
-            return ResponseEntity.status(409)
-                .body("Task is not completed yet");
+            throw new IllegalStateException("Task is not completed yet");
         }
 
         return ResponseEntity.ok(vehicleService.getResult(taskId));
