@@ -1,31 +1,39 @@
 package com.logistics.logisticsapp.dto;
 
 import com.logistics.logisticsapp.entity.OrderStatus;
-import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponseDto {
 
     private Long id;
-    private double price;
+
+    private Double price;
+
     private OrderStatus status;
 
+    private ClientResponseDto client;
+
     private List<RouteResponseDto> routes;
+
     private List<CargoResponseDto> cargos;
+
     private List<VehicleResponseDto> vehicles;
-    private List<RouteVehicleCargoResponseDto> routeVehicleCargoList;
 
     public Long getId() {
         return id;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
     public OrderStatus getStatus() {
         return status;
+    }
+
+    public ClientResponseDto getClient() {
+        return client;
     }
 
     public List<RouteResponseDto> getRoutes() {
@@ -44,12 +52,16 @@ public class OrderResponseDto {
         this.id = id;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public void setClient(ClientResponseDto client) {
+        this.client = client;
     }
 
     public void setRoutes(List<RouteResponseDto> routes) {
@@ -62,12 +74,5 @@ public class OrderResponseDto {
 
     public void setVehicles(List<VehicleResponseDto> vehicles) {
         this.vehicles = vehicles;
-    }
-    public List<RouteVehicleCargoResponseDto> getRouteVehicleCargoList() {
-        return routeVehicleCargoList;
-    }
-
-    public void setRouteVehicleCargoList(List<RouteVehicleCargoResponseDto> routeVehicleCargoList) {
-        this.routeVehicleCargoList = routeVehicleCargoList;
     }
 }

@@ -101,7 +101,10 @@ public class OrderService {
             rvcRepository.save(rvc);
         }
         invalidateCache();
-        return OrderMapper.toDtoWithRelations(order);
+        Order savedOrder = orderRepository.findByIdWithRelations(order.getId())
+            .orElseThrow();
+
+        return OrderMapper.toDtoWithRelations(savedOrder);
     }
 
     public Page<OrderResponseDto> getAll(Pageable pageable) {
@@ -179,7 +182,6 @@ public class OrderService {
                 order = new OrderResponseDto();
                 order.setId(orderId);
                 order.setStatus(OrderStatus.valueOf(String.valueOf(row[1])));
-                order.setRouteVehicleCargoList(new ArrayList<>());
                 orderMap.put(orderId, order);
             }
 
@@ -204,8 +206,6 @@ public class OrderService {
             rvcDto.setCargo(cargo);
             rvcDto.setRoute(route);
             rvcDto.setVehicle(vehicle);
-
-            order.getRouteVehicleCargoList().add(rvcDto);
         }
 
         return new ArrayList<>(orderMap.values());
