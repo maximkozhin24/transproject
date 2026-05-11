@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Button, Dialog, DialogTitle, DialogContent, TextField, MenuItem,
-    IconButton, Box, Typography, Chip, Grid, Card, CardContent,
+    IconButton, Box, Typography, Chip, Grid,
     Alert, Snackbar, CircularProgress, FormControl, InputLabel, Select
 } from '@mui/material';
 import { Edit, Delete, Add, LocalShipping } from '@mui/icons-material';
@@ -34,7 +34,6 @@ const Orders = () => {
     const loadData = async () => {
         setLoading(true);
         try {
-            // Загружаем все справочники и заказы параллельно
             const [ordersRes, clientsRes, cargosRes, routesRes, vehiclesRes] = await Promise.all([
                 orderApi.getAll(),
                 clientApi.getAll(),
@@ -43,10 +42,7 @@ const Orders = () => {
                 vehicleApi.getAll()
             ]);
 
-            console.log('Raw Orders Response:', ordersRes.data);
-
             let ordersData = [];
-            // Обработка ответа: может быть массив или объект с content
             if (Array.isArray(ordersRes.data)) {
                 ordersData = ordersRes.data;
             } else if (ordersRes.data?.content) {
@@ -76,7 +72,6 @@ const Orders = () => {
 
     const enrichOrdersWithData = (ordersList, clientsList, cargosList, routesList, vehiclesList) => {
         const enriched = ordersList.map(order => {
-
             let clientData = order.client;
             if (!clientData && order.clientId) {
                 clientData = clientsList.find(c => String(c.id) === String(order.clientId));
@@ -87,12 +82,10 @@ const Orders = () => {
             const rawVehicles = order.vehicles || [];
 
             const enrichedItems = rawCargos.map((cargo, index) => {
-
                 const route = (rawRoutes[index] && rawRoutes[index] !== null) ? rawRoutes[index] : null;
                 const vehicle = (rawVehicles[index] && rawVehicles[index] !== null) ? rawVehicles[index] : null;
 
                 return {
-
                     id: cargo.id,
                     cargo: {
                         id: cargo.id,
@@ -122,7 +115,6 @@ const Orders = () => {
         });
 
         setEnrichedOrders(enriched);
-        console.log('Enriched Orders:', enriched);
     };
 
     const showSnackbar = (message, severity) => {
@@ -132,7 +124,6 @@ const Orders = () => {
     const handleOpenDialog = (order = null) => {
         if (order) {
             setSelectedOrder(order);
-
             const items = (order.routeVehicleCargoList || []).map(item => ({
                 cargoId: item.cargo?.id,
                 routeId: item.route?.id,
@@ -141,7 +132,6 @@ const Orders = () => {
                 routeStart: item.route?.startLocation,
                 routeEnd: item.route?.endLocation
             }));
-
             setFormData({
                 price: order.price,
                 status: order.status || 'NEW',
@@ -168,7 +158,6 @@ const Orders = () => {
         }
         try {
             setLoading(true);
-
             await vehicleApi.assign({
                 orderId: selectedOrderForAssign.id,
                 vehicleId: selectedVehicleId
@@ -232,7 +221,6 @@ const Orders = () => {
             price: parseFloat(formData.price),
             status: formData.status,
             clientId: parseInt(formData.clientId),
-
             items: formData.items.map(item => ({
                 routeId: parseInt(item.routeId),
                 cargoId: parseInt(item.cargoId)
@@ -275,10 +263,7 @@ const Orders = () => {
         }
     };
 
-
-    const getOrderItems = (order) => {
-        return order.routeVehicleCargoList || [];
-    };
+    const getOrderItems = (order) => order.routeVehicleCargoList || [];
 
     const getTotalWeight = (order) => {
         const items = order.routeVehicleCargoList || [];
@@ -288,7 +273,6 @@ const Orders = () => {
     const getAssignedVehicle = (order) => {
         const items = order.routeVehicleCargoList || [];
         if (items.length === 0) return 'Not assigned';
-
         const vehicle = items[0]?.vehicle;
         if (vehicle && vehicle.plateNumber) {
             return `${vehicle.plateNumber} (${vehicle.model || ''})`.trim();
@@ -307,9 +291,10 @@ const Orders = () => {
     }
 
     return (
-        <Box className="fade-in" sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h4" sx={{ color: '#000000' }}>
+        <Box className="fade-in" sx={{ bgcolor: '#f5f5f5', minHeight: '100vh', p: { xs: 1, sm: 2, md: 3 } }}>
+            {/* Заголовок и кнопка добавления */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+                <Typography variant="h4" sx={{ color: '#000000', fontWeight: 600 }}>
                     Orders Management
                 </Typography>
                 <Button
@@ -317,69 +302,44 @@ const Orders = () => {
                     startIcon={<Add />}
                     onClick={() => handleOpenDialog()}
                     disabled={loading}
+                    sx={{ bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' } }}
                 >
                     Create Order
                 </Button>
             </Box>
 
-            {/* Статистика */}
-            <Grid container spacing={3} sx={{ mb: 3 }}>
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">Total Orders</Typography>
-                            <Typography variant="h3">{displayOrders.length}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">Completed</Typography>
-                            <Typography variant="h3">
-                                {displayOrders.filter(o => o.status === 'COMPLETED').length}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">In Progress</Typography>
-                            <Typography variant="h3">
-                                {displayOrders.filter(o => o.status === 'IN_PROGRESS').length}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
+            {/* 🗑️ Статистика удалена */}
 
-            {}
-            <TableContainer component={Paper}>
+            {/* Таблица заказов */}
+            <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 1 }}>
                 <Table>
-                    <TableHead>
+                    <TableHead sx={{ bgcolor: '#e0e0e0' }}>
                         <TableRow>
-                            <TableCell>Client</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Items</TableCell>
-                            <TableCell>Total Weight</TableCell>
-                            <TableCell>Vehicle</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Client</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Price</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Items</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Total Weight</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Vehicle</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {displayOrders.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={7} align="center">
-                                    No orders found. Click "Create Order" to create one.
+                                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                                    <Typography color="textSecondary">
+                                        No orders found. Click "Create Order" to create one.
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
                         ) : (
                             displayOrders.map((order) => (
-                                <TableRow key={order.id}>
-                                    <TableCell>
-                                        {}
+                                <TableRow
+                                    key={order.id}
+                                    sx={{ '&:hover': { bgcolor: '#fafafa' }, transition: 'background-color 0.2s' }}
+                                >
+                                    <TableCell sx={{ fontWeight: 500 }}>
                                         {order.client?.name || 'N/A'}
                                     </TableCell>
                                     <TableCell>${order.price}</TableCell>
@@ -392,29 +352,37 @@ const Orders = () => {
                                                         order.status === 'NEW' ? 'info' : 'default'
                                             }
                                             size="small"
+                                            sx={{ fontWeight: 500 }}
                                         />
                                     </TableCell>
                                     <TableCell>
                                         {getOrderItems(order).map((item, idx) => (
-                                            <Box key={idx} sx={{ mb: 0.5 }}>
-                                                <Typography variant="body2">
-                                                    • {item.cargo?.name || 'Unknown cargo'}
-                                                </Typography>
-                                            </Box>
+                                            <Typography key={idx} variant="body2" sx={{ mb: 0.25 }}>
+                                                • {item.cargo?.name || 'Unknown cargo'}
+                                            </Typography>
                                         ))}
-                                        {getOrderItems(order).length === 0 && <Typography color="textSecondary">No items</Typography>}
+                                        {getOrderItems(order).length === 0 && (
+                                            <Typography variant="body2" color="textSecondary">No items</Typography>
+                                        )}
                                     </TableCell>
                                     <TableCell>{getTotalWeight(order)} kg</TableCell>
-                                    <TableCell>{getAssignedVehicle(order)}</TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => handleOpenDialog(order)} color="primary" size="small">
-                                            <Edit />
+                                        <Typography variant="body2" color="textSecondary">
+                                            {getAssignedVehicle(order)}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => handleOpenDialog(order)} color="primary" size="small"
+                                                    sx={{ '&:hover': { bgcolor: 'rgba(25, 118, 210, 0.1)' } }}>
+                                            <Edit fontSize="small" />
                                         </IconButton>
-                                        <IconButton onClick={() => handleOpenAssignDialog(order)} color="secondary" size="small">
-                                            <LocalShipping />
+                                        <IconButton onClick={() => handleOpenAssignDialog(order)} color="secondary" size="small"
+                                                    sx={{ '&:hover': { bgcolor: 'rgba(156, 39, 176, 0.1)' } }}>
+                                            <LocalShipping fontSize="small" />
                                         </IconButton>
-                                        <IconButton onClick={() => handleDelete(order.id)} color="error" size="small">
-                                            <Delete />
+                                        <IconButton onClick={() => handleDelete(order.id)} color="error" size="small"
+                                                    sx={{ '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.1)' } }}>
+                                            <Delete fontSize="small" />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -424,106 +392,113 @@ const Orders = () => {
                 </Table>
             </TableContainer>
 
-            {}
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
-                <DialogTitle>{selectedOrder ? 'Edit Order' : 'Create Order'}</DialogTitle>
+            {/* Диалог создания/редактирования заказа */}
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth
+                    PaperProps={{ sx: { borderRadius: 2 } }}>
+                <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>
+                    {selectedOrder ? 'Edit Order' : 'Create Order'}
+                </DialogTitle>
                 <DialogContent>
-                    <Grid container spacing={2} sx={{ mt: 1 }}>
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <InputLabel>Client</InputLabel>
-                                <Select
-                                    value={formData.clientId}
-                                    label="Client"
-                                    onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
-                                >
-                                    {clients.map((client) => (
-                                        <MenuItem key={client.id} value={client.id}>
-                                            {client.name} - {client.email}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Price"
-                                type="number"
-                                value={formData.price}
-                                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth>
-                                <InputLabel>Status</InputLabel>
-                                <Select
-                                    value={formData.status}
-                                    label="Status"
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                >
-                                    <MenuItem value="NEW">NEW</MenuItem>
-                                    <MenuItem value="IN_PROGRESS">IN_PROGRESS</MenuItem>
-                                    <MenuItem value="COMPLETED">COMPLETED</MenuItem>
-                                    <MenuItem value="CANCELLED">CANCELLED</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel>Client *</InputLabel>
+                                    <Select
+                                        value={formData.clientId}
+                                        label="Client *"
+                                        onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
+                                        required
+                                    >
+                                        {clients.map((client) => (
+                                            <MenuItem key={client.id} value={client.id}>
+                                                {client.name} - {client.email}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Price *"
+                                    type="number"
+                                    value={formData.price}
+                                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                    required
+                                    inputProps={{ min: 0, step: '0.01' }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth>
+                                    <InputLabel>Status</InputLabel>
+                                    <Select
+                                        value={formData.status}
+                                        label="Status"
+                                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                    >
+                                        <MenuItem value="NEW">NEW</MenuItem>
+                                        <MenuItem value="IN_PROGRESS">IN_PROGRESS</MenuItem>
+                                        <MenuItem value="COMPLETED">COMPLETED</MenuItem>
+                                        <MenuItem value="CANCELLED">CANCELLED</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                        {}
-                        <Grid item xs={12}>
-                            <Typography variant="h6">Order Items</Typography>
-                            <Paper sx={{ p: 2, mt: 1 }}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={5}>
-                                        <FormControl fullWidth>
-                                            <InputLabel>Cargo</InputLabel>
-                                            <Select
-                                                value={selectedCargo.cargoId}
-                                                label="Cargo"
-                                                onChange={(e) => setSelectedCargo({ ...selectedCargo, cargoId: e.target.value })}
-                                            >
-                                                {cargos.map((cargo) => (
-                                                    <MenuItem key={cargo.id} value={cargo.id}>
-                                                        {cargo.name} ({cargo.weight} kg)
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
+                            {/* Добавление товаров */}
+                            <Grid item xs={12}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mt: 1 }}>
+                                    Order Items
+                                </Typography>
+                                <Paper variant="outlined" sx={{ p: 2, mt: 1, bgcolor: '#fafafa' }}>
+                                    <Grid container spacing={2} alignItems="center">
+                                        <Grid item xs={5}>
+                                            <FormControl fullWidth size="small">
+                                                <InputLabel>Cargo</InputLabel>
+                                                <Select
+                                                    value={selectedCargo.cargoId}
+                                                    label="Cargo"
+                                                    onChange={(e) => setSelectedCargo({ ...selectedCargo, cargoId: e.target.value })}
+                                                >
+                                                    {cargos.map((cargo) => (
+                                                        <MenuItem key={cargo.id} value={cargo.id}>
+                                                            {cargo.name} ({cargo.weight} kg)
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <FormControl fullWidth size="small">
+                                                <InputLabel>Route</InputLabel>
+                                                <Select
+                                                    value={selectedCargo.routeId}
+                                                    label="Route"
+                                                    onChange={(e) => setSelectedCargo({ ...selectedCargo, routeId: e.target.value })}
+                                                >
+                                                    {routes.map((route) => (
+                                                        <MenuItem key={route.id} value={route.id}>
+                                                            {route.startLocation} → {route.endLocation} ({route.distance} km)
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <Button variant="outlined" onClick={handleAddItem} fullWidth size="small">
+                                                Add
+                                            </Button>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={5}>
-                                        <FormControl fullWidth>
-                                            <InputLabel>Route</InputLabel>
-                                            <Select
-                                                value={selectedCargo.routeId}
-                                                label="Route"
-                                                onChange={(e) => setSelectedCargo({ ...selectedCargo, routeId: e.target.value })}
-                                            >
-                                                {routes.map((route) => (
-                                                    <MenuItem key={route.id} value={route.id}>
-                                                        {route.startLocation} → {route.endLocation} ({route.distance} km)
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Button variant="outlined" onClick={handleAddItem} fullWidth sx={{ height: '100%' }}>
-                                            Add
-                                        </Button>
-                                    </Grid>
-                                </Grid>
 
-                                {formData.items.length > 0 && (
-                                    <Box sx={{ mt: 2 }}>
-                                        <Typography variant="subtitle2">Added Items:</Typography>
-                                        <TableContainer component={Paper} sx={{ mt: 1, maxHeight: 300 }}>
+                                    {formData.items.length > 0 && (
+                                        <TableContainer sx={{ mt: 2, maxHeight: 200 }}>
                                             <Table size="small">
                                                 <TableHead>
                                                     <TableRow>
-                                                        <TableCell>Cargo</TableCell>
-                                                        <TableCell>Route</TableCell>
-                                                        <TableCell>Actions</TableCell>
+                                                        <TableCell sx={{ fontWeight: 600 }}>Cargo</TableCell>
+                                                        <TableCell sx={{ fontWeight: 600 }}>Route</TableCell>
+                                                        <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -533,7 +508,7 @@ const Orders = () => {
                                                             <TableCell>{item.routeStart} → {item.routeEnd}</TableCell>
                                                             <TableCell>
                                                                 <IconButton onClick={() => handleRemoveItem(idx)} color="error" size="small">
-                                                                    <Delete />
+                                                                    <Delete fontSize="small" />
                                                                 </IconButton>
                                                             </TableCell>
                                                         </TableRow>
@@ -541,30 +516,41 @@ const Orders = () => {
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
-                                    </Box>
-                                )}
-                            </Paper>
-                        </Grid>
+                                    )}
+                                </Paper>
+                            </Grid>
 
-                        <Grid item xs={12}>
-                            <Button
-                                variant="contained"
-                                onClick={handleSubmit}
-                                fullWidth
-                                disabled={loading}
-                            >
-                                {selectedOrder ? 'Update' : 'Create'}
-                            </Button>
+                            <Grid item xs={12} sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => setOpenDialog(false)}
+                                    fullWidth
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleSubmit}
+                                    disabled={loading}
+                                    fullWidth
+                                    sx={{ bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' } }}
+                                >
+                                    {selectedOrder ? 'Update' : 'Create'}
+                                </Button>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </Box>
                 </DialogContent>
             </Dialog>
 
             {/* Диалог назначения машины */}
-            <Dialog open={openAssignDialog} onClose={() => setOpenAssignDialog(false)} maxWidth="sm" fullWidth>
-                <DialogTitle>Assign Vehicle to Order #{selectedOrderForAssign?.id}</DialogTitle>
+            <Dialog open={openAssignDialog} onClose={() => setOpenAssignDialog(false)} maxWidth="sm" fullWidth
+                    PaperProps={{ sx: { borderRadius: 2 } }}>
+                <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>
+                    Assign Vehicle to Order #{selectedOrderForAssign?.id}
+                </DialogTitle>
                 <DialogContent>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                         <FormControl fullWidth>
                             <InputLabel>Select Vehicle</InputLabel>
                             <Select
@@ -583,6 +569,8 @@ const Orders = () => {
                             variant="contained"
                             onClick={handleAssignVehicle}
                             disabled={loading}
+                            fullWidth
+                            sx={{ bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' } }}
                         >
                             Assign Vehicle
                         </Button>
@@ -590,14 +578,18 @@ const Orders = () => {
                 </DialogContent>
             </Dialog>
 
+            {/* Snackbar для уведомлений */}
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={6000}
                 onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
                 <Alert
                     severity={snackbar.severity}
                     onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    sx={{ width: '100%' }}
+                    variant="filled"
                 >
                     {snackbar.message}
                 </Alert>

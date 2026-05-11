@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
     Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Button, Dialog, DialogTitle, DialogContent, TextField, IconButton,
-    Box, Typography, Card, CardContent, Grid, Alert, Snackbar, Chip,
-    CircularProgress
+    Box, Typography, Alert, Snackbar, Chip, CircularProgress
 } from '@mui/material';
-import { Edit, Delete, Add, FitnessCenter, Straighten } from '@mui/icons-material';
+import { Edit, Delete, Add } from '@mui/icons-material';
 import { cargoApi } from '../services/api';
 
 const Cargos = () => {
@@ -85,8 +84,6 @@ const Cargos = () => {
         }
     };
 
-    const totalWeight = cargos.reduce((sum, cargo) => sum + (cargo.weight || 0), 0);
-
     if (loading && cargos.length === 0) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -96,9 +93,10 @@ const Cargos = () => {
     }
 
     return (
-        <Box className="fade-in">
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h4" sx={{ color: '#000000' }}>
+        <Box className="fade-in" sx={{ bgcolor: '#f5f5f5', minHeight: '100vh', p: { xs: 1, sm: 2, md: 3 } }}>
+            {/* Заголовок и кнопка добавления */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+                <Typography variant="h4" sx={{ color: '#000000', fontWeight: 600 }}>
                     Cargo Management
                 </Typography>
                 <Button
@@ -106,52 +104,38 @@ const Cargos = () => {
                     startIcon={<Add />}
                     onClick={() => handleOpenDialog()}
                     disabled={loading}
+                    sx={{ bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' } }}
                 >
                     Add Cargo
                 </Button>
             </Box>
 
-            <Grid container spacing={3} sx={{ mb: 3 }}>
-                <Grid item xs={12} md={6}>
-                    <Card>
-                        <CardContent>
-                            <FitnessCenter color="primary" />
-                            <Typography variant="h6">Total Cargos</Typography>
-                            <Typography variant="h3">{cargos.length}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Card>
-                        <CardContent>
-                            <Straighten color="primary" />
-                            <Typography variant="h6">Total Weight</Typography>
-                            <Typography variant="h3">{totalWeight} kg</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
-
-            <TableContainer component={Paper}>
+            {/* Таблица грузов */}
+            <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 1 }}>
                 <Table>
-                    <TableHead>
+                    <TableHead sx={{ bgcolor: '#e0e0e0' }}>
                         <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Weight (kg)</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Weight (kg)</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {cargos.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={4} align="center">
-                                    No cargos found. Click "Add Cargo" to create one.
+                                <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                                    <Typography color="textSecondary">
+                                        No cargos found. Click "Add Cargo" to create one.
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
                         ) : (
                             cargos.map((cargo) => (
-                                <TableRow key={cargo.id}>
+                                <TableRow
+                                    key={cargo.id}
+                                    sx={{ '&:hover': { bgcolor: '#fafafa' }, transition: 'background-color 0.2s' }}
+                                >
                                     <TableCell>{cargo.name}</TableCell>
                                     <TableCell>{cargo.weight}</TableCell>
                                     <TableCell>
@@ -159,14 +143,25 @@ const Cargos = () => {
                                             label={cargo.weight > 100 ? 'Heavy' : 'Light'}
                                             color={cargo.weight > 100 ? 'error' : 'success'}
                                             size="small"
+                                            sx={{ fontWeight: 500 }}
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => handleOpenDialog(cargo)} color="primary">
-                                            <Edit />
+                                        <IconButton
+                                            onClick={() => handleOpenDialog(cargo)}
+                                            color="primary"
+                                            size="small"
+                                            sx={{ '&:hover': { bgcolor: 'rgba(25, 118, 210, 0.1)' } }}
+                                        >
+                                            <Edit fontSize="small" />
                                         </IconButton>
-                                        <IconButton onClick={() => handleDelete(cargo.id)} color="error">
-                                            <Delete />
+                                        <IconButton
+                                            onClick={() => handleDelete(cargo.id)}
+                                            color="error"
+                                            size="small"
+                                            sx={{ '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.1)' } }}
+                                        >
+                                            <Delete fontSize="small" />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -176,16 +171,28 @@ const Cargos = () => {
                 </Table>
             </TableContainer>
 
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-                <DialogTitle>{selectedCargo ? 'Edit Cargo' : 'Add New Cargo'}</DialogTitle>
+            {/* Диалог создания/редактирования */}
+            <Dialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: { borderRadius: 2 }
+                }}
+            >
+                <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>
+                    {selectedCargo ? 'Edit Cargo' : 'Add New Cargo'}
+                </DialogTitle>
                 <DialogContent>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                         <TextField
                             fullWidth
                             label="Cargo Name"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             required
+                            variant="outlined"
                         />
                         <TextField
                             fullWidth
@@ -194,20 +201,44 @@ const Cargos = () => {
                             value={formData.weight}
                             onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
                             required
+                            variant="outlined"
+                            inputProps={{ min: 0 }}
                         />
-                        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
-                            {selectedCargo ? 'Update' : 'Create'}
-                        </Button>
+                        <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                            <Button
+                                variant="outlined"
+                                onClick={() => setOpenDialog(false)}
+                                fullWidth
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={handleSubmit}
+                                disabled={loading}
+                                fullWidth
+                                sx={{ bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' } }}
+                            >
+                                {selectedCargo ? 'Update' : 'Create'}
+                            </Button>
+                        </Box>
                     </Box>
                 </DialogContent>
             </Dialog>
 
+            {/* Snackbar для уведомлений */}
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={6000}
                 onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+                <Alert
+                    severity={snackbar.severity}
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    sx={{ width: '100%' }}
+                    variant="filled"
+                >
                     {snackbar.message}
                 </Alert>
             </Snackbar>

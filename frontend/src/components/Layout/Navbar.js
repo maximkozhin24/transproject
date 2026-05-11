@@ -1,6 +1,8 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
+// 🔄 Меняем иконку Dashboard на DashboardIcon
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PeopleIcon from '@mui/icons-material/People';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -11,10 +13,10 @@ const Navbar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { path: '/', label: 'Dashboard', icon: <LocalShippingIcon /> },
+        { path: '/', label: 'Dashboard', icon: <DashboardIcon /> }, // 🔄 Новая иконка
+        { path: '/orders', label: 'Orders', icon: <LocalShippingIcon /> }, // 🔄 Переместили после Dashboard
         { path: '/clients', label: 'Clients', icon: <PeopleIcon /> },
         { path: '/cargos', label: 'Cargos', icon: <InventoryIcon /> },
-        { path: '/orders', label: 'Orders', icon: <LocalShippingIcon /> },
         { path: '/routes', label: 'Routes', icon: <RouteIcon /> },
         { path: '/vehicles', label: 'Vehicles', icon: <MapIcon /> },
     ];

@@ -13,12 +13,10 @@ const Dashboard = () => {
         totalVehicles: 0,
     });
 
-
     const [clients, setClients] = useState([]);
     const [cargos, setCargos] = useState([]);
     const [routes, setRoutes] = useState([]);
     const [vehicles, setVehicles] = useState([]);
-
     const [recentOrders, setRecentOrders] = useState([]);
 
     useEffect(() => {
@@ -27,9 +25,8 @@ const Dashboard = () => {
 
     const loadDashboardData = async () => {
         try {
-
             const [ordersRes, clientsRes, cargosRes, routesRes, vehiclesRes] = await Promise.all([
-                orderApi.getAll(0, 100), // Берем последние 100 заказов
+                orderApi.getAll(0, 100),
                 clientApi.getAll(),
                 cargoApi.getAll(),
                 routeApi.getAll(),
@@ -38,12 +35,10 @@ const Dashboard = () => {
 
             const rawOrders = ordersRes.data.content || ordersRes.data;
 
-
             setClients(clientsRes.data || []);
             setCargos(cargosRes.data || []);
             setRoutes(routesRes.data || []);
             setVehicles(vehiclesRes.data || []);
-
 
             setStats({
                 totalOrders: ordersRes.data.totalElements || rawOrders.length,
@@ -52,10 +47,7 @@ const Dashboard = () => {
                 totalVehicles: vehiclesRes.data.length,
             });
 
-
             const enrichedOrders = enrichOrders(rawOrders, clientsRes.data, cargosRes.data, routesRes.data, vehiclesRes.data);
-
-
             setRecentOrders(enrichedOrders.slice(0, 5));
 
         } catch (error) {
@@ -63,15 +55,12 @@ const Dashboard = () => {
         }
     };
 
-
     const enrichOrders = (ordersList, clientsList, cargosList, routesList, vehiclesList) => {
         return ordersList.map(order => {
-
             let clientData = order.client;
             if (!clientData && order.clientId) {
                 clientData = clientsList.find(c => String(c.id) === String(order.clientId));
             }
-
 
             const rawCargos = order.cargos || [];
             const rawRoutes = order.routes || [];
@@ -111,92 +100,74 @@ const Dashboard = () => {
     };
 
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>
-                Dashboard
-            </Typography>
+        <Box className="fade-in" sx={{ bgcolor: '#f5f5f5', minHeight: '100vh', p: { xs: 1, sm: 2, md: 3 } }}>
+            {/* Заголовок */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+                <Typography variant="h4" sx={{ color: '#000000', fontWeight: 600 }}>
+                    Dashboard
+                </Typography>
+            </Box>
 
-            {}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                {Object.entries(stats).map(([key, value]) => (
-                    <Grid item xs={12} sm={6} md={3} key={key}>
-                        <Card>
-                            <CardContent>
-                                <Typography color="textSecondary" gutterBottom>
-                                    {key.replace('total', 'Total ').replace(/([A-Z])/g, ' $1').trim()}
-                                </Typography>
-                                <Typography variant="h4">
-                                    {value}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
-
-            {}
-            <Grid container spacing={3}>
-                <Grid item xs={12}>
-                    <Paper sx={{ p: 2 }}>
-                        <Typography variant="h6" gutterBottom>
-                            Recent Orders
-                        </Typography>
-                        <TableContainer>
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        {/* ID убран */}
-                                        <TableCell>Client</TableCell>
-                                        <TableCell>Price</TableCell>
-                                        <TableCell>Status</TableCell>
-                                        <TableCell>Items</TableCell>
-                                        <TableCell>Weight</TableCell>
-                                        <TableCell>Vehicle</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {recentOrders.length > 0 ? recentOrders.map((order) => (
-                                        <TableRow key={order.id}>
-                                            <TableCell>
-                                                {/* Отображаем имя клиента */}
-                                                {order.client?.name || 'Unknown'}
-                                            </TableCell>
-                                            <TableCell>${order.price}</TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    label={order.status}
-                                                    color={order.status === 'COMPLETED' ? 'success' : order.status === 'IN_PROGRESS' ? 'warning' : 'info'}
-                                                    size="small"
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                {/* Список товаров */}
-                                                {getOrderItems(order).map((item, idx) => (
-                                                    <div key={idx} style={{ fontSize: '0.85rem' }}>
-                                                        • {item.cargo?.name || 'Item'}
-                                                    </div>
-                                                ))}
-                                                {getOrderItems(order).length === 0 && 'No items'}
-                                            </TableCell>
-                                            <TableCell>{getTotalWeight(order)} kg</TableCell>
-                                            <TableCell>
-                                                {/* Привязанная машина */}
-                                                <Typography variant="body2" color="textSecondary">
-                                                    {getAssignedVehicle(order)}
-                                                </Typography>
-                                            </TableCell>
-                                        </TableRow>
-                                    )) : (
-                                        <TableRow>
-                                            <TableCell colSpan={6} align="center">No recent orders found</TableCell>
-                                        </TableRow>
+            {/* Таблица Recent Orders */}
+            <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 1 }}>
+                <Table>
+                    <TableHead sx={{ bgcolor: '#e0e0e0' }}>
+                        <TableRow>
+                            <TableCell sx={{ fontWeight: 600 }}>Client</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Price</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Items</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Weight</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Vehicle</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {recentOrders.length > 0 ? recentOrders.map((order) => (
+                            <TableRow
+                                key={order.id}
+                                sx={{ '&:hover': { bgcolor: '#fafafa' }, transition: 'background-color 0.2s' }}
+                            >
+                                <TableCell sx={{ fontWeight: 500 }}>
+                                    {order.client?.name || 'Unknown'}
+                                </TableCell>
+                                <TableCell>${order.price}</TableCell>
+                                <TableCell>
+                                    <Chip
+                                        label={order.status}
+                                        color={order.status === 'COMPLETED' ? 'success' : order.status === 'IN_PROGRESS' ? 'warning' : 'info'}
+                                        size="small"
+                                        sx={{ fontWeight: 500 }}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    {getOrderItems(order).map((item, idx) => (
+                                        <Typography key={idx} variant="body2" sx={{ mb: 0.25 }}>
+                                            • {item.cargo?.name || 'Item'}
+                                        </Typography>
+                                    ))}
+                                    {getOrderItems(order).length === 0 && (
+                                        <Typography variant="body2" color="textSecondary">No items</Typography>
                                     )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                </Grid>
-            </Grid>
+                                </TableCell>
+                                <TableCell>{getTotalWeight(order)} kg</TableCell>
+                                <TableCell>
+                                    <Typography variant="body2" color="textSecondary">
+                                        {getAssignedVehicle(order)}
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        )) : (
+                            <TableRow>
+                                <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
+                                    <Typography color="textSecondary">
+                                        No recent orders found
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Box>
     );
 };
