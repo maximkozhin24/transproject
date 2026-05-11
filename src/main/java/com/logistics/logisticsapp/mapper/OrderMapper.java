@@ -33,12 +33,10 @@ public class OrderMapper {
         dto.setPrice(order.getPrice());
         dto.setStatus(order.getStatus());
 
-        // CLIENT
         if (order.getClient() != null) {
             dto.setClient(ClientMapper.toDto(order.getClient()));
         }
 
-        // ROUTES
         List<RouteResponseDto> routes = order.getRouteVehicleCargoList()
             .stream()
             .map(rvc -> {
@@ -55,7 +53,6 @@ public class OrderMapper {
             })
             .toList();
 
-        // CARGOS
         List<CargoResponseDto> cargos = order.getRouteVehicleCargoList()
             .stream()
             .map(rvc -> {
@@ -71,7 +68,6 @@ public class OrderMapper {
             })
             .toList();
 
-        // VEHICLES
         List<VehicleResponseDto> vehicles = order.getRouteVehicleCargoList()
             .stream()
             .map(rvc -> {
@@ -91,7 +87,6 @@ public class OrderMapper {
             })
             .toList();
 
-        // ROUTE VEHICLE CARGO LIST
         List<RouteVehicleCargoResponseDto> rvcList = order.getRouteVehicleCargoList()
             .stream()
             .map(rvc -> {
@@ -99,7 +94,6 @@ public class OrderMapper {
                 RouteVehicleCargoResponseDto rvcDto =
                     new RouteVehicleCargoResponseDto();
 
-                // ROUTE
                 if (rvc.getRoute() != null) {
 
                     RouteResponseDto routeDto = new RouteResponseDto();
@@ -118,7 +112,6 @@ public class OrderMapper {
                     rvcDto.setRoute(routeDto);
                 }
 
-                // CARGO
                 if (rvc.getCargo() != null) {
 
                     CargoResponseDto cargoDto =
@@ -131,7 +124,6 @@ public class OrderMapper {
                     rvcDto.setCargo(cargoDto);
                 }
 
-                // VEHICLE
                 if (rvc.getVehicle() != null) {
 
                     VehicleResponseDto vehicleDto =

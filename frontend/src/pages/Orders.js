@@ -15,7 +15,6 @@ const Orders = () => {
     const [routes, setRoutes] = useState([]);
     const [vehicles, setVehicles] = useState([]);
 
-    // enrichedOrders - это данные, готовые к отображению
     const [enrichedOrders, setEnrichedOrders] = useState([]);
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -60,7 +59,6 @@ const Orders = () => {
             setVehicles(vehiclesRes.data || []);
             setOrders(ordersData);
 
-            // Обогащаем данные сразу после загрузки
             enrichOrdersWithData(
                 ordersData,
                 clientsRes.data || [],
@@ -76,33 +74,26 @@ const Orders = () => {
         }
     };
 
-    // === ГЛАВНАЯ ФУНКЦИЯ ТРАНСФОРМАЦИИ ДАННЫХ ===
-    // Превращает плоский JSON (cargos[], routes[]) в удобную структуру
     const enrichOrdersWithData = (ordersList, clientsList, cargosList, routesList, vehiclesList) => {
         const enriched = ordersList.map(order => {
-            // 1. Обработка Клиента
-            // Если клиент пришел объектом в заказе (как в вашем новом JSON), берем его.
-            // Иначе ищем по ID в списке клиентов.
+
             let clientData = order.client;
             if (!clientData && order.clientId) {
                 clientData = clientsList.find(c => String(c.id) === String(order.clientId));
             }
 
-            // 2. Сборка Items (RouteVehicleCargoList)
-            // В вашем JSON приходят массивы: cargos, routes, vehicles.
-            // Мы собираем их обратно в единый объект для UI.
             const rawCargos = order.cargos || [];
             const rawRoutes = order.routes || [];
             const rawVehicles = order.vehicles || [];
 
             const enrichedItems = rawCargos.map((cargo, index) => {
-                // Предполагаем, что индексы массивов совпадают (1 груз -> 1 маршрут -> 1 машина)
+
                 const route = (rawRoutes[index] && rawRoutes[index] !== null) ? rawRoutes[index] : null;
                 const vehicle = (rawVehicles[index] && rawVehicles[index] !== null) ? rawVehicles[index] : null;
 
                 return {
-                    // Формируем структуру, которую ожидает UI
-                    id: cargo.id, // временный ID
+
+                    id: cargo.id,
                     cargo: {
                         id: cargo.id,
                         name: cargo.name,
@@ -142,7 +133,6 @@ const Orders = () => {
         if (order) {
             setSelectedOrder(order);
 
-            // Заполняем форму данными для редактирования
             const items = (order.routeVehicleCargoList || []).map(item => ({
                 cargoId: item.cargo?.id,
                 routeId: item.route?.id,
@@ -178,7 +168,7 @@ const Orders = () => {
         }
         try {
             setLoading(true);
-            // TODO: Убедитесь, что API принимает такие параметры
+
             await vehicleApi.assign({
                 orderId: selectedOrderForAssign.id,
                 vehicleId: selectedVehicleId
@@ -238,12 +228,11 @@ const Orders = () => {
             return;
         }
 
-        // Подготовка данных для отправки на бэкенд
         const submitData = {
             price: parseFloat(formData.price),
             status: formData.status,
             clientId: parseInt(formData.clientId),
-            // Бэкенд ожидает массив items с routeId и cargoId
+
             items: formData.items.map(item => ({
                 routeId: parseInt(item.routeId),
                 cargoId: parseInt(item.cargoId)
@@ -286,7 +275,6 @@ const Orders = () => {
         }
     };
 
-    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ UI ===
 
     const getOrderItems = (order) => {
         return order.routeVehicleCargoList || [];
@@ -301,7 +289,6 @@ const Orders = () => {
         const items = order.routeVehicleCargoList || [];
         if (items.length === 0) return 'Not assigned';
 
-        // Берем первую машину из списка привязок
         const vehicle = items[0]?.vehicle;
         if (vehicle && vehicle.plateNumber) {
             return `${vehicle.plateNumber} (${vehicle.model || ''})`.trim();
@@ -367,7 +354,7 @@ const Orders = () => {
                 </Grid>
             </Grid>
 
-            {/* Таблица */}
+            {}
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -392,7 +379,7 @@ const Orders = () => {
                             displayOrders.map((order) => (
                                 <TableRow key={order.id}>
                                     <TableCell>
-                                        {/* ОТОБРАЖЕНИЕ КЛИЕНТА */}
+                                        {}
                                         {order.client?.name || 'N/A'}
                                     </TableCell>
                                     <TableCell>${order.price}</TableCell>
@@ -437,7 +424,7 @@ const Orders = () => {
                 </Table>
             </TableContainer>
 
-            {/* Диалог создания/редактирования */}
+            {}
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
                 <DialogTitle>{selectedOrder ? 'Edit Order' : 'Create Order'}</DialogTitle>
                 <DialogContent>
@@ -483,7 +470,7 @@ const Orders = () => {
                             </FormControl>
                         </Grid>
 
-                        {/* Секция добавления товаров */}
+                        {}
                         <Grid item xs={12}>
                             <Typography variant="h6">Order Items</Typography>
                             <Paper sx={{ p: 2, mt: 1 }}>

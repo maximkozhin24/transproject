@@ -13,7 +13,7 @@ const Dashboard = () => {
         totalVehicles: 0,
     });
 
-    // Сохраняем справочники для отображения имен вместо ID
+
     const [clients, setClients] = useState([]);
     const [cargos, setCargos] = useState([]);
     const [routes, setRoutes] = useState([]);
@@ -27,7 +27,7 @@ const Dashboard = () => {
 
     const loadDashboardData = async () => {
         try {
-            // Загружаем всё параллельно
+
             const [ordersRes, clientsRes, cargosRes, routesRes, vehiclesRes] = await Promise.all([
                 orderApi.getAll(0, 100), // Берем последние 100 заказов
                 clientApi.getAll(),
@@ -38,13 +38,13 @@ const Dashboard = () => {
 
             const rawOrders = ordersRes.data.content || ordersRes.data;
 
-            // Сохраняем справочники
+
             setClients(clientsRes.data || []);
             setCargos(cargosRes.data || []);
             setRoutes(routesRes.data || []);
             setVehicles(vehiclesRes.data || []);
 
-            // Обновляем статистику
+
             setStats({
                 totalOrders: ordersRes.data.totalElements || rawOrders.length,
                 totalClients: clientsRes.data.length,
@@ -52,10 +52,10 @@ const Dashboard = () => {
                 totalVehicles: vehiclesRes.data.length,
             });
 
-            // Обогащаем заказы (преобразуем плоский JSON в удобный вид)
+
             const enrichedOrders = enrichOrders(rawOrders, clientsRes.data, cargosRes.data, routesRes.data, vehiclesRes.data);
 
-            // Берем только последние 5 для таблицы
+
             setRecentOrders(enrichedOrders.slice(0, 5));
 
         } catch (error) {
@@ -63,16 +63,16 @@ const Dashboard = () => {
         }
     };
 
-    // Функция трансформации данных (аналогично Orders.js)
+
     const enrichOrders = (ordersList, clientsList, cargosList, routesList, vehiclesList) => {
         return ordersList.map(order => {
-            // 1. Клиент
+
             let clientData = order.client;
             if (!clientData && order.clientId) {
                 clientData = clientsList.find(c => String(c.id) === String(order.clientId));
             }
 
-            // 2. Сборка Items из массивов cargos, routes, vehicles
+
             const rawCargos = order.cargos || [];
             const rawRoutes = order.routes || [];
             const rawVehicles = order.vehicles || [];
@@ -96,7 +96,6 @@ const Dashboard = () => {
         });
     };
 
-    // Хелперы для отображения
     const getOrderItems = (order) => order.routeVehicleCargoList || [];
 
     const getTotalWeight = (order) => {
@@ -117,7 +116,7 @@ const Dashboard = () => {
                 Dashboard
             </Typography>
 
-            {/* Карточки статистики */}
+            {}
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {Object.entries(stats).map(([key, value]) => (
                     <Grid item xs={12} sm={6} md={3} key={key}>
@@ -135,7 +134,7 @@ const Dashboard = () => {
                 ))}
             </Grid>
 
-            {/* Таблица Recent Orders (Теперь на всю ширину и с полной инфо) */}
+            {}
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Paper sx={{ p: 2 }}>
