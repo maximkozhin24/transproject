@@ -20,6 +20,8 @@ public class OrderResponseDto {
 
     private List<VehicleResponseDto> vehicles;
 
+    private List<RouteVehicleCargoResponseDto> routeVehicleCargoList;
+
     public Long getId() {
         return id;
     }
@@ -74,5 +76,11 @@ public class OrderResponseDto {
 
     public void setVehicles(List<VehicleResponseDto> vehicles) {
         this.vehicles = vehicles;
+    }
+
+    public void setRouteVehicleCargoList(
+        List<RouteVehicleCargoResponseDto> routeVehicleCargoList
+    ) {
+        this.routeVehicleCargoList = routeVehicleCargoList;
     }
 }

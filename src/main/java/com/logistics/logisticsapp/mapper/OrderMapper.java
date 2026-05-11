@@ -156,6 +156,7 @@ public class OrderMapper {
         dto.setRoutes(routes);
         dto.setCargos(cargos);
         dto.setVehicles(vehicles);
+        dto.setRouteVehicleCargoList(rvcList);
 
         return dto;
     }
