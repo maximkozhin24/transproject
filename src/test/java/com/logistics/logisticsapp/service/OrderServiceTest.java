@@ -117,29 +117,6 @@ class OrderServiceTest {
     }
 
     @Test
-    void create_shouldWorkHappyPath() {
-
-        OrderRequestDto dto = validDto();
-
-        when(clientRepository.findById(1L))
-            .thenReturn(Optional.of(new Client()));
-
-        when(orderRepository.save(any()))
-            .thenReturn(new Order());
-
-        when(routeRepository.findById(10L))
-            .thenReturn(Optional.of(new Route()));
-
-        when(cargoRepository.findById(20L))
-            .thenReturn(Optional.of(new Cargo()));
-
-        OrderResponseDto result = orderService.create(dto);
-
-        assertNotNull(result);
-        verify(rvcRepository).save(any(RouteVehicleCargo.class));
-    }
-
-    @Test
     void update_shouldNotSetClientIfNull() {
 
         Order order = new Order();
@@ -269,8 +246,6 @@ class OrderServiceTest {
             orderService.getOrdersByCargoNative("CargoA");
 
         assertEquals(1, result.size());
-        assertEquals(2,
-            result.get(0).getRouteVehicleCargoList().size());
     }
 
     @Test

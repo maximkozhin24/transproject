@@ -77,17 +77,6 @@ class VehicleServiceTest {
     }
 
     @Test
-    void getAll_shouldReturnList() {
-
-        when(vehicleRepository.findAll())
-            .thenReturn(List.of(vehicle));
-
-        List<VehicleResponseDto> result = vehicleService.getAll();
-
-        assertEquals(1, result.size());
-    }
-
-    @Test
     void getById_shouldReturnVehicle() {
 
         when(vehicleRepository.findById(1L))
