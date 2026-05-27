@@ -2,7 +2,10 @@
 import axios from 'axios';
 
 // Используйте правильный URL для API
-const API_BASE_URL = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080/api';
+const API_BASE_URL =
+    process.env.NODE_ENV === 'production'
+        ? '/api'
+        : 'http://localhost:8080/api';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
