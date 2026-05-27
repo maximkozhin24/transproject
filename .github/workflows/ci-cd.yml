@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # JOB 1: Тесты и сборка
   test-and-build:
     name: Test & Build
     runs-on: ubuntu-latest
@@ -55,6 +56,7 @@ jobs:
       - name: Build JAR
         run: mvn package -DskipTests
 
+  # JOB 2: Деплой на Render (только для main/master)
   deploy-to-render:
     name: Deploy to Render
     runs-on: ubuntu-latest
@@ -62,19 +64,15 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
-      - name: Validate secrets
-        run: |
-          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
-            echo "RENDER_DEPLOY_HOOK is missing"
-            exit 1
-          fi
-
       - name: Trigger Render Deploy
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
           echo "🚀 Triggering deployment on Render..."
-          curl -fsSL -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          curl -X POST "$RENDER_DEPLOY_HOOK"
           echo "✅ Deployment triggered successfully!"
 
+  # JOB 3: Healthcheck после деплоя
   healthcheck:
     name: Health Check
     runs-on: ubuntu-latest
@@ -83,7 +81,7 @@ jobs:
 
     steps:
       - name: Wait for deployment
-        run: sleep 60
+        run: sleep 45
 
       - name: Check application health
         uses: jtalk/url-health-check-action@v4
@@ -96,7 +94,9 @@ jobs:
 
       - name: Health check result
         run: |
-          echo "Job status: ${{ job.status }}"
-          if [ "${{ job.status }}" != "success" ]; then
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Health check passed! App is running."
+          else
+            echo "❌ Health check failed!"
             exit 1
           fi
