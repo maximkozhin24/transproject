@@ -35,6 +35,5 @@ build/
 .vscode/
 /out/
 /.idea/
-resources
 
 /logs/
