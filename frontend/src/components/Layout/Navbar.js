@@ -1,7 +1,6 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
-// 🔄 Меняем иконку Dashboard на DashboardIcon
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PeopleIcon from '@mui/icons-material/People';

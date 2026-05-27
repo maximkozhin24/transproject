@@ -1,7 +1,7 @@
-// src/services/api.js
+
 import axios from 'axios';
 
-// Используйте правильный URL для API
+
 const API_BASE_URL =
     process.env.NODE_ENV === 'production'
         ? '/api'
@@ -15,7 +15,7 @@ const api = axios.create({
     },
 });
 
-// Добавляем перехватчик для логирования ошибок
+
 api.interceptors.response.use(
     response => response,
     error => {
@@ -24,7 +24,7 @@ api.interceptors.response.use(
     }
 );
 
-// API endpoints
+
 export const cargoApi = {
     getAll: () => api.get('/cargo'),
     getById: (id) => api.get(`/cargo/${id}`),

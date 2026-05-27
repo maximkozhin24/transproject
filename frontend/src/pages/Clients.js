@@ -48,7 +48,6 @@ const Clients = () => {
     };
 
     const handleSubmit = async () => {
-        // Валидация
         if (!formData.name.trim()) {
             showSnackbar('Please enter client name', 'warning');
             return;
