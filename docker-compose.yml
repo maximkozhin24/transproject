@@ -9,7 +9,6 @@ services:
     environment:
       POSTGRES_DB: logisticsdb
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: data
 
     ports:
       - "5432:5432"

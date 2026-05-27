@@ -19,7 +19,7 @@ jobs:
         env:
           POSTGRES_DB: logistics_test
           POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
+
         ports:
           - 5432:5432
         options: >-
@@ -44,7 +44,6 @@ jobs:
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/logistics_test
           SPRING_DATASOURCE_USERNAME: test_user
-          SPRING_DATASOURCE_PASSWORD: test_password
 
       - name: Upload test reports
         if: always()
