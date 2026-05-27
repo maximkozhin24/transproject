@@ -1,105 +1,102 @@
-name: CI/CD Pipeline
+name: Deploy to Render
 
 on:
   push:
-    branches:
-      - master
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
-
-  build-test-deploy:
-
+  # JOB 1: Тесты и сборка
+  test-and-build:
+    name: Test & Build
     runs-on: ubuntu-latest
 
-    env:
-      SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
-      SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
-      SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: logistics_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-
-      # =========================
-      # 1. Checkout
-      # =========================
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # =========================
-      # 2. Setup Node (React build)
-      # =========================
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Build React frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
-
-      # =========================
-      # 3. Copy React build → Spring Boot static
-      # =========================
-      - name: Copy frontend build to backend
-        run: |
-          rm -rf src/main/resources/static/*
-          cp -r frontend/build/* src/main/resources/static/
-
-      # =========================
-      # 4. Setup Java
-      # =========================
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 21
-          cache: maven
-
-      # =========================
-      # 5. Build backend + tests
-      # =========================
-      - name: Build backend
-        run: ./mvnw clean package
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
 
       - name: Run tests
-        run: ./mvnw test
+        run: mvn test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/logistics_test
+          SPRING_DATASOURCE_USERNAME: test_user
+          SPRING_DATASOURCE_PASSWORD: test_password
 
-      # =========================
-      # 6. Docker build
-      # =========================
-      - name: Build Docker image
-        run: |
-          docker build -t logistics-app .
-
-      # =========================
-      # 7. Login Docker Hub
-      # =========================
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          name: test-reports
+          path: target/surefire-reports/
 
-      # =========================
-      # 8. Push Docker image
-      # =========================
-      - name: Push image
+      - name: Build JAR
+        run: mvn package -DskipTests
+
+  # JOB 2: Деплой на Render (только для main/master)
+  deploy-to-render:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    needs: test-and-build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+      - name: Trigger Render Deploy
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
-          docker tag logistics-app ${{ secrets.DOCKERHUB_USERNAME }}/logistics-app:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/logistics-app:latest
+          echo "🚀 Triggering deployment on Render..."
+          curl -X POST "$RENDER_DEPLOY_HOOK"
+          echo "✅ Deployment triggered successfully!"
 
-      # =========================
-      # 9. Deploy to Render
-      # =========================
-      - name: Trigger Render deploy
-        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+  # JOB 3: Healthcheck после деплоя
+  healthcheck:
+    name: Health Check
+    runs-on: ubuntu-latest
+    needs: deploy-to-render
+    if: always() && needs.deploy-to-render.result == 'success'
 
-      # =========================
-      # 10. Healthcheck
-      # =========================
-      - name: Healthcheck
+    steps:
+      - name: Wait for deployment
+        run: sleep 45
+
+      - name: Check application health
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://${{ secrets.RENDER_URL }}/actuator/health
+          follow-redirect: false
+          max-attempts: 15
+          retry-delay: 10s
+          retry-all: true
+
+      - name: Health check result
         run: |
-          sleep 40
-          curl -f ${{ secrets.APP_URL }}/actuator/health
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Health check passed! App is running."
+          else
+            echo "❌ Health check failed!"
+            exit 1
+          fi
