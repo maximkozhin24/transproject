@@ -7,48 +7,99 @@ on:
 
 jobs:
 
-  build-and-test:
+  build-test-deploy:
+
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16
-
-        env:
-          POSTGRES_DB: logisticsdb
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-
-        ports:
-          - 5432:5432
-
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/logisticsdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
     steps:
 
+      # =========================
+      # 1. Checkout
+      # =========================
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # =========================
+      # 2. Setup Node (React build)
+      # =========================
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Build React frontend
+        working-directory: ./frontend
+        run: |
+          npm install
+          npm run build
+
+      # =========================
+      # 3. Copy React build → Spring Boot static
+      # =========================
+      - name: Copy frontend build to backend
+        run: |
+          rm -rf src/main/resources/static/*
+          cp -r frontend/build/* src/main/resources/static/
+
+      # =========================
+      # 4. Setup Java
+      # =========================
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+          cache: maven
 
-      - name: Build project
-        run: mvn clean package
+      # =========================
+      # 5. Build backend + tests
+      # =========================
+      - name: Build backend
+        run: ./mvnw clean package
 
       - name: Run tests
-        run: mvn test
+        run: ./mvnw test
 
+      # =========================
+      # 6. Docker build
+      # =========================
+      - name: Build Docker image
+        run: |
+          docker build -t logistics-app .
+
+      # =========================
+      # 7. Login Docker Hub
+      # =========================
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # =========================
+      # 8. Push Docker image
+      # =========================
+      - name: Push image
+        run: |
+          docker tag logistics-app ${{ secrets.DOCKERHUB_USERNAME }}/logistics-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/logistics-app:latest
+
+      # =========================
+      # 9. Deploy to Render
+      # =========================
+      - name: Trigger Render deploy
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      # =========================
+      # 10. Healthcheck
+      # =========================
       - name: Healthcheck
-        run: echo "Healthcheck passed"
+        run: |
+          sleep 40
+          curl -f ${{ secrets.APP_URL }}/actuator/health
